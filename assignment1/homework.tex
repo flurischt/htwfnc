@@ -1,0 +1,51 @@
+\documentclass[10pt,a4paper,oneside]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[table]{xcolor}  
+\usepackage[top=2cm,bottom=4cm,left=1.5cm,right=3cm,asymmetric]{geometry}
+\author{Flurin Rindisbacher}
+\title{How To Write Fast Numerical Code Assignment 1}
+\begin{document}
+\chapter*{Assignment 1}
+How To Write Fast Numerical Code \\
+Flurin Rindisbacher, rflurin@student.ethz.ch \\
+Spring Term 2015
+\section*{Exercise 1}
+I own a MacBook Pro (Retina, Mid 2012) 2.6 GHz Intel Core i7. According to \textit{sysctl -n machdep.cpu.brand\_string} and the Intel manuals the microarchitectural parameters are: \\
+
+\begin{tabular}{|l|l|l|}
+\hline 
+\rowcolor{gray!30}
+\textbf{Parameter} & \textbf{Value} & \textbf{Assignment} \\ 
+\hline 
+Processor manufacturer & Intel & a)\\ 
+\hline 
+Processor name & Core i7 & a)\\ 
+\hline
+Processor number & 3720QM  & a)\\ 
+\hline
+\# of cores & 4  & b) \\ 
+\hline 
+CPU-core frequency & 2.60GHz  & c)\\ 
+\hline 
+Tick/tok & It's a Tick model (Ivy Bridge, shrink to 22nm) & d) \\ 
+\hline 
+Cycles/issue for floating point additions & 1 add/cycle & e) \\ 
+\hline 
+Cycles/issue for floating point multiplications & 1 mul/cycle & f) \\ 
+\hline 
+Max. theoretical float peak performance & 2 flops/cycle and 5.2 Gflop/s & g) \\ 
+\hline 
+\end{tabular} 
+\\
+Source of Information:
+\begin{itemize}
+  \item \url{http://www.intel.com/content/dam/doc/manual/64-ia-32-architectures-optimization-manual.pdf} Page 2-37
+  \item \url{http://ark.intel.com/products/64891/Intel-Core-i7-3720QM-Processor-6M-Cache-up-to-3_60-GHz}
+  \item ``sysctl -n machdep.cpu.brand\_string''
+\end{itemize}
+\end{document}
