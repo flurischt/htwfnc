@@ -14,7 +14,7 @@
 How To Write Fast Numerical Code \\
 Flurin Rindisbacher, rflurin@student.ethz.ch \\
 Spring Term 2015
-\section*{Exercise 1}
+\section*{Exercise 1 - Get to know your machine}
 I own a MacBook Pro (Retina, Mid 2012) 2.6 GHz Intel Core i7. According to \textit{sysctl -n machdep.cpu.brand\_string} and the Intel manuals the microarchitectural parameters are: \\
 
 \begin{tabular}{|l|l|l|}
@@ -48,4 +48,28 @@ Source of Information:
   \item \url{http://ark.intel.com/products/64891/Intel-Core-i7-3720QM-Processor-6M-Cache-up-to-3_60-GHz}
   \item ``sysctl -n machdep.cpu.brand\_string''
 \end{itemize}
+
+\section*{Exercise 2 - Cost analysis}
+\subsection*{a)}
+let $C(N) = float\_muls(N) + float\_adds (N) + float\_divs(N) + float\_mins(N)$ with \\
+$float\_muls = $ number of floating point multiplications \\
+$float\_adds = $number of floating point additions \\
+$float\_divs = $number of floating point divisions calls \\
+$float\_mins = $number of floating point min() calls \\
+
+\subsection*{b)}
+There are two inner-most loops containing operations in the function \textit{strong\_closure}. Both of these for-loops are nested inside two other loops going from 0..N/2-1 and 0..N-1. Since both loops go from 0 to N-1 their bodies are executed: $N/2 * N * N = N^3/2$ times.
+\\
+$float\_divs = N^3/2$ \\
+$float\_muls = 0$ \\
+$float\_adds = 7*N^3/2$ \\
+$float\_mins = 5*N^3/2$\\
+and therefore $C(N) = N^3/2 float\_divs + 7*N^3/2 float\_adds + 5*N^3/2 float\_mins$ for the function strong\_closure()
+
+\subsection*{c)}
+I would define $C(N) = {\#flops}$. This would lead to a cost of $C(N) = 13*N^3/2 = 7.5*N^3$ for the strong\_closure() function.
+
+\section*{Exercise 3 - Floyd Warshall}
+asdf
+
 \end{document}
