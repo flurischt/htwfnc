@@ -13,7 +13,7 @@
 
 #define NUM_RUNS 1
 #define CYCLES_REQUIRED 1e8
-#define FREQUENCY 3.4e9
+#define FREQUENCY 2.6e9
 #define min(a,b) a < b ? a : b
 
 #define CALIBRATE
@@ -223,47 +223,17 @@ double queryperfcounter(LARGE_INTEGER f) {
 #endif
 
 int main(int argc, char **argv){
-
-  int i,j;
   double r;
-  double c;
-  double t;
-#ifdef WIN32  
-  __int64 f;
-#endif
-  double p;
-  if (argc!=2) {printf("usage: FW <n>\n"); return -1;}
-  n = atoi(argv[1]);
-  printf("n=%d \n",n);
 
-  A = (double*)malloc(n*n*sizeof(double));
- 
-  
-  init_mat();
-  r = rdtsc();
-  
-  printf("RDTSC instruction:\n %lf cycles measured => %lf seconds, assuming frequency is %lf MHz. (change in source file if different)\n\n", r, r/(FREQUENCY), (FREQUENCY)/1e6);
-
-  init_mat();
-  c = c_clock();
-  printf("C clock() function:\n %lf cycles measured. On some systems, this number seems to be actually computed from a timer in seconds then transformed into clock ticks using the variable CLOCKS_PER_SEC. Unfortunately, it appears that CLOCKS_PER_SEC is sometimes set improperly. (According to this variable, your computer should be running at %lf MHz). In any case, dividing by this value should give a correct timing: %lf seconds. \n\n",c, (double) CLOCKS_PER_SEC/1e6, c/CLOCKS_PER_SEC);
-
-  init_mat();
-#ifndef WIN32
-  t = timeofday();
-  printf("C gettimeofday() function:\n %lf seconds measured\n\n",t);
-#else
-  t = gettickcount();
-  printf("Windows getTickCount() function:\n %lf milliseconds measured\n\n",t);
-
-  QueryPerformanceFrequency((LARGE_INTEGER *)&f);
-
-  p = queryperfcounter(f);
-  printf("Windows QueryPerformanceCounter() function:\n %lf cycles measured => %lf seconds, with reported CPU frequency %lf MHz\n\n",p,p/f,(double)f);
-#endif
-
-  printf("Type anything to leave\n");
-  scanf("%d",&i);
+  printf("n \t cycles \t\t seconds\n");
+  for(n=100;n<=2000;n+=100)
+  {
+      A = (double*)malloc(n*n*sizeof(double));
+      init_mat();
+      r = rdtsc();
+      printf("%i \t %.2lf \t %lf\n", n, r, r/(FREQUENCY));
+      free(A);
+  }
   return 0;
 }
 
