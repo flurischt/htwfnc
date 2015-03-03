@@ -1,4 +1,4 @@
-\documentclass[10pt,a4paper,oneside]{report}
+\documentclass[10pt,a4paper,oneside,notitlepage]{report}
 \usepackage[utf8]{inputenc}
 \usepackage[english]{babel}
 \usepackage{amsmath}
@@ -6,14 +6,25 @@
 \usepackage{amssymb}
 \usepackage{hyperref}
 \usepackage[table]{xcolor}  
-\usepackage[top=2cm,bottom=4cm,left=1.5cm,right=3cm,asymmetric]{geometry}
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+
+% kein einrücken bei neuen absätzen
+\setlength{\parindent}{0pt}
+
+% position titel
+\setlength{\droptitle}{-2cm}
+
+% abstand vor subsection titel
+\titlespacing{\subsection}{0pt}{40pt}{8pt}
+
 \author{Flurin Rindisbacher}
-\title{How To Write Fast Numerical Code Assignment 1}
+\title{How To Write Fast Numerical Code \\ \vspace{6 mm} \textbf{Assignment 1}}
+
 \begin{document}
-\chapter*{Assignment 1}
-How To Write Fast Numerical Code \\
-Flurin Rindisbacher, rflurin@student.ethz.ch \\
-Spring Term 2015
+\maketitle
+
 \section*{Exercise 1 - Get to know your machine}
 I own a MacBook Pro (Retina, Mid 2012) 2.6 GHz Intel Core i7. According to \textit{sysctl -n machdep.cpu.brand\_string} and the Intel manuals the microarchitectural parameters are: \\
 
@@ -70,6 +81,21 @@ and therefore $C(N) = N^3/2 float\_divs + 7*N^3/2 float\_adds + 5*N^3/2 float\_m
 I would define $C(N) = {\#flops}$. This would lead to a cost of $C(N) = 13*N^3/2 = 7.5*N^3$ for the strong\_closure() function.
 
 \section*{Exercise 3 - Floyd Warshall}
-asdf
-
+\subsection*{a)}
+done
+\subsection*{b)}
+The compute() functions uses $2*N^3$ floating point operations (additions and min() calls).
+\subsection*{c)}
+\begin{itemize}
+\item osx yosemite, gcc-4.9 (Homebrew gcc 4.9.2\_1) 4.9.2
+\item gcc-4.9 fw.c -o fw -O3 -mno-abm -fno-tree-vectorize
+\item disable turboboost
+\item mess with finder
+\item decided to use "find\_best\_timer.c" (medians)
+\item used rdtsc
+\end{itemize}
+\subsection*{d)}
+add plots here
+\subsection*{e)}
+todo
 \end{document}
