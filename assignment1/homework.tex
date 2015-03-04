@@ -135,7 +135,8 @@ See file convex.c. I used the rdtsc timing function.
 \end{figure}
 The convex combination costs $\underline{4*N}$ floating point operations where $N$ is the size of the input arrays.
 \subsection*{d)}
-todo
+I cannot explain the performance drop in the 6th measurement (around $n=5e1$) but I tend to believe that this could be one of my OS X troubles (e.g. spotlight kicking in...). ;-) \\
+Ignoring this performance drop we see measurements around 1.3 flops/cycle until the performance starts to decrease at $n=1e4$. The convex computation is with $4*N$ flops quite cheap and that's why the performance starts to drop with bigger input sizes. The input and output arrays start to get bigger and bigger and the load/store starts to dominate the computation.
 
 \section*{Exercise 5 - Bounds}
 \subsection*{a)}
