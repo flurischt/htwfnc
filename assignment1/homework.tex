@@ -106,19 +106,23 @@ In the end I decided to use the rdtsc method to measure the code. I wrote a smal
 \begin{figure}[H]
 \caption{Runtime plot fw.c}
 \includegraphics[height=9.5cm]{fw_runtime}
+\label{fw_runtime}
 \end{figure}
 \subsection*{ii)}
 \begin{figure}[H]
 \caption{Performance plot fw.c}
 \includegraphics[height=9.5cm]{fw_performance}
+\label{fw_performance}
 \end{figure}
 \subsection*{iii)}
 \begin{figure}[H]
 \caption{Percentage of the theoretical peak performance (2 flops/cycle) fw.c}
 \includegraphics[height=9.5cm]{fw_percentage_of_peak}
+\label{fw_percentage}
 \end{figure}
 \subsection*{e)}
-todo
+The theoretical peak performance would be 2 flops/cycle but I limited the y-axis in Figure \ref{fw_performance} to 1 because the performance never reaches 2 flops/cycle. The same is true for Figure \ref{fw_percentage} which shows percentage-values but the y-Axis only goes up to 50\%. \\ 
+The performance plots show, that at $n=700$ the performance starts to decrease. Then starting at $n=1000$ the performance stops decreasing and stays at approximately 0.7 flops/cycle. I tend to believe this is due to the cost of loading the matrices. At $n=700$ the matrix-size starts to "hurt" the performance. Then at $n=1000$ the cost for loading and storing dominates the processing and the performance stays at around the 0.7 flops/cycle.
 \section*{Exercise 4 - Convex Combination}
 \subsection*{a)}
 Please see the file convex.c
