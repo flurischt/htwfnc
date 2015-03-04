@@ -148,7 +148,7 @@ For each iteration of the inner loop there are 6 multiplications and 4 additions
 \begin{tabular}{|l|c|c|}
 \hline 
 \rowcolor{gray!30}
-operation & start cycle & end cycle \\ 
+\textbf{operation} & \textbf{start cycle} & \textbf{end cycle }\\ 
 \hline 
 mul1 & 1 & 5 \\ 
 \hline 
@@ -170,6 +170,21 @@ result = add3 + add2 & 13 & \textbf{15} \\
 \hline 
 \end{tabular}  \\ \\
 Each loop iteration needs at least 15 cycles to finish. The table above shows the operations. Note that the additions can only start when the first two multiplications have finished. This gives us a lower bound of $\underline{15*(n-1)^2}$ operations.
-\subsubsection*{ii)}
+\subsubsection*{ii)} 
+Each loop iteration needs to load 12 doubles. \\
+Latency / Throughput (doubles/cycle) for a Core i7 Sandy Bridge CPU: \\
+L1 = 4 / 4 \\
+L2 = 12 / 4 \\
+RAM = 100 / 1 \\
 
+\begin{tabular}{|c|c|c|c|}
+\hline 
+\rowcolor{gray!30}
+ & \textbf{L1-resident} & \textbf{L2-resident} & \textbf{RAM-resident }\\ 
+\hline 
+\cellcolor{gray!30} \textbf{cycles per loop iteration} & 7 & 15 & 115 \\ 
+\hline 
+\cellcolor{gray!30} \textbf{total cycles} & $7*(n-1)^2$ & $15*(n-1)^2$ & $115*(n-1)^2$ \\ 
+\hline 
+\end{tabular} 
 \end{document}
