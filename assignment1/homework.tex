@@ -65,11 +65,11 @@ Source of Information:
 
 \section*{Exercise 2 - Cost analysis}
 \subsection*{a)}
-let $C(N) = float\_muls(N) + float\_adds (N) + float\_divs(N) + float\_mins(N)$ with \\
+let $C(N) = float\_muls(N) + float\_adds (N) + float\_divs(N) + float\_mins(N)$ \\ with \\
 $float\_muls = $ number of floating point multiplications \\
 $float\_adds = $number of floating point additions \\
 $float\_divs = $number of floating point divisions calls \\
-$float\_mins = $number of floating point min() calls \\
+$float\_mins = $number of floating point min() calls (comparisons) \\
 
 \subsection*{b)}
 There are two inner-most loops containing operations in the function \textit{strong\_closure}. Both of these for-loops are nested inside two other loops going from 0..N/2-1 and 0..N-1. Since both loops go from 0 to N-1 their bodies are executed: $N/2 * N * N = N^3/2$ times.
@@ -78,7 +78,7 @@ $float\_divs = N^3/2$ \\
 $float\_muls = 0$ \\
 $float\_adds = 7*N^3/2$ \\
 $float\_mins = 5*N^3/2$\\
-and therefore $C(N) = N^3/2 float\_divs + 7*N^3/2 float\_adds + 5*N^3/2 float\_mins$ for the function strong\_closure()
+and therefore $\underline{C(N) = N^3/2 float\_divs + 7*N^3/2 float\_adds + 5*N^3/2 float\_mins}$ for the function strong\_closure()
 
 \subsection*{c)}
 I would define $C(N) = {\#flops}$. This would lead to a cost of $C(N) = 13*N^3/2 = 7.5*N^3$ for the strong\_closure() function.
@@ -129,11 +129,47 @@ See file convex.c. I used the rdtsc timing function.
 \caption{}
 \includegraphics[height=9.5cm]{convex_performance}
 \end{figure}
-The convex combination costs $4*N$ floating point operations where $N$ is the size of the input arrays.
+The convex combination costs $\underline{4*N}$ floating point operations where $N$ is the size of the input arrays.
 \subsection*{d)}
 todo
 
 \section*{Exercise 5 - Bounds}
 \subsection*{a)}
+There are $(N-1)^2$ iterations. In each iteration there are 6 floating point multiplications and 5 floating point additions. This results in a cost of $\underline{11*(N-1)^2}$ flops.
+\subsection*{b)}
+$W(n) = 11*(n-1)^2 \\
+Q(n) >= 8*((n-1)^2*(9 + 6) + (n-1)^2 ) = 128*(n-1)^2$  bytes \\($9$ stencil + $6$ G reads and $1$ write to G per iteration) \\
+$I(n) = {W(n) \over Q(n)} <= {11*(n-1)^2 \over 128*(n-1)^2} = {11 \over 128} \in \underline{O(1)}$
+\subsection*{c)}
+\subsubsection*{i)}
+Addition: 1 operation per cycle with latency 3 \\
+Multiplication: 1 operation per cycle with latency 5 \\
+For each iteration of the inner loop there are 6 multiplications and 4 additions. Because we need to multiply before adding an addition can start when two multiplications have finished.  \\ \\
+\begin{tabular}{|l|c|c|}
+\hline 
+\rowcolor{gray!30}
+operation & start cycle & end cycle \\ 
+\hline 
+mul1 & 1 & 5 \\ 
+\hline 
+mul2 & 2 & 6 \\ 
+\hline 
+mul3 & 3 & 7 \\ 
+\hline 
+mul4 & 4 & 8 \\ 
+\hline 
+mul5 & 5 & 9 \\ 
+\hline 
+add1 = mul1 + mul2 & 7 & 9 \\ 
+\hline 
+add2 = mul3 + mul 4 & 9 & 1 \\ 
+\hline 
+add3 = add1 + mul5 & 10 & 12 \\ 
+\hline 
+result = add3 + add2 & 13 & \textbf{15} \\ 
+\hline 
+\end{tabular}  \\ \\
+Each loop iteration needs at least 15 cycles to finish. The table above shows the operations. Note that the additions can only start when the first two multiplications have finished. This gives us a lower bound of $\underline{15*(n-1)^2}$ operations.
+\subsubsection*{ii)}
 
 \end{document}
