@@ -9,6 +9,9 @@
 \usepackage[margin=2.5cm]{geometry}
 \usepackage{titling}
 \usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{float}
+\graphicspath{ {plots/} }
 
 % kein einrücken bei neuen absätzen
 \setlength{\parindent}{0pt}
@@ -82,20 +85,55 @@ I would define $C(N) = {\#flops}$. This would lead to a cost of $C(N) = 13*N^3/2
 
 \section*{Exercise 3 - Floyd Warshall}
 \subsection*{a)}
-done
+There's nothing to document here...
 \subsection*{b)}
-The compute() functions uses $2*N^3$ floating point operations (additions and min() calls).
+The compute() function uses $2*N^3$ floating point operations (One addition and one comparison/min() call() per iteration) where $N$ is the number of nodes.
 \subsection*{c)}
-\begin{itemize}
-\item osx yosemite, gcc-4.9 (Homebrew gcc 4.9.2\_1) 4.9.2
-\item gcc-4.9 fw.c -o fw -O3 -mno-abm -fno-tree-vectorize
-\item disable turboboost
-\item mess with finder
-\item decided to use "find\_best\_timer.c" (medians)
-\item used rdtsc
-\end{itemize}
+It turned out to be very hard to get consistent timing results. I'm working on a Mac OS X Yosemite which did not make the whole experience easier. First thing I had to do was disable Inte Turbo Boost using the Kernel Extension mentioned on the Lecture Website. Then there are other problem zones like "spotlight" randomly starting to index  documents when I'm timing my code... 
+
+\subsubsection*{Compiler}
+For all measurements gcc-4.9 (Homebrew gcc 4.9.2\_1) 4.9.2 \\
+The argumnts for compiling fw.c were:\\
+\begin{verbatim}
+gcc-4.9 fw.c -o fw -O3 -mno-abm -fno-tree-vectorize
+\end{verbatim}
+
+\subsubsection*{Used timer}
+In the end I decided to use the rdtsc method to measure the code. I wrote a small programm "find\_best\_timer.c" which after multiple tests with different input sizes lead me to believe that the rdtsc method gives me better results.
+
 \subsection*{d)}
-add plots here
+\subsection*{i)}
+\begin{figure}[H]
+\caption{Runtime plot fw.c}
+\includegraphics[height=9.5cm]{fw_runtime}
+\end{figure}
+\subsection*{ii)}
+\begin{figure}[H]
+\caption{Performance plot fw.c}
+\includegraphics[height=9.5cm]{fw_performance}
+\end{figure}
+\subsection*{iii)}
+\begin{figure}[H]
+\caption{Percentage of the theoretical peak performance (2 flops/cycle) fw.c}
+\includegraphics[height=9.5cm]{fw_percentage_of_peak}
+\end{figure}
 \subsection*{e)}
 todo
+\section*{Exercise 4 - Convex Combination}
+\subsection*{a)}
+Please see the file convex.c
+\subsection*{b)}
+See file convex.c. I used the rdtsc timing function.
+\subsection*{c)}
+\begin{figure}[H]
+\caption{}
+\includegraphics[height=9.5cm]{convex_performance}
+\end{figure}
+The convex combination costs $4*N$ floating point operations where $N$ is the size of the input arrays.
+\subsection*{d)}
+todo
+
+\section*{Exercise 5 - Bounds}
+\subsection*{a)}
+
 \end{document}
