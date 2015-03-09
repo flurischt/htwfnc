@@ -48,7 +48,7 @@ double median(vector< double > const & l) {
  * Substitute with the opcount of method Vandermonde::det
  */
   
-#define OPCOUNT ...
+#define OPCOUNT ((n * n) - n)
 
 template<typename F> 
 class V {

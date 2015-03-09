@@ -1,0 +1,39 @@
+\documentclass[10pt,a4paper,oneside,notitlepage]{report}
+\usepackage[utf8]{inputenc}
+\usepackage[english]{babel}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\usepackage[table]{xcolor}  
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{titling}
+\usepackage{titlesec}
+\usepackage{graphicx}
+\usepackage{float}
+%\graphicspath{ {plots/} }
+
+% kein einrücken bei neuen absätzen
+\setlength{\parindent}{0pt}
+
+% position titel
+\setlength{\droptitle}{-2cm}
+
+% abstand vor subsection titel
+\titlespacing{\subsection}{0pt}{40pt}{8pt}
+
+\author{Flurin Rindisbacher}
+\title{How To Write Fast Numerical Code \\ \vspace{6 mm} \textbf{Assignment 2}}
+
+\begin{document}
+\maketitle
+
+\section*{Exercise 2 - Vandermonde determinants}
+
+\subsection*{(a)}
+Number of iterations in the innermost loop: $\sum\limits_{j=1}^{n-1} j = \frac{(n-1)*n}{2} = \frac{n^2 -n}{2}$ \\
+With one subtraction and one multiplication per iteration this results in $\underline{OPCOUNT = n^2-n}$ floating point operations.  
+
+
+
+\end{document}
