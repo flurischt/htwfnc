@@ -90,9 +90,23 @@ class V {
     }
 
     F det_opt() const {
-
-        // Your optimized code here
-
+        F d = 1;
+        F temp = 0;
+        unsigned limit=0;
+        unsigned j=0;
+        for (unsigned i = 1; i < _n; i++)
+        {
+            temp = _r1[i];
+            limit = i-1;
+            for (j = 0; j < limit; j+=2)
+            {
+                d *= (temp - _r1[j]) * (temp - _r1[j+1]);
+            }
+            // finish remaining element
+            for(;j<i;j++)
+                d *= (temp - _r1[j]);
+        }
+        return d;
     }
 
     bool validate(double threshold) const {
