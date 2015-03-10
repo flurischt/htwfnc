@@ -36,7 +36,7 @@ double median(vector< double > const & l) {
 
     if(n>1) {
         sort(ordl.begin(), ordl.end());
-        res = n%2 == 0 ? ordl[n/2] : (ordl[n/2] + ordl[n/2+1])/2.;
+        res = n%2 == 0 ? (ordl[n/2-1] + ordl[n/2])/2. : ordl[n/2];
     } else {
         res = l[0];
     }
