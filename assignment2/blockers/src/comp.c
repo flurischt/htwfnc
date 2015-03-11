@@ -115,6 +115,37 @@ void superslow_inlined(smat_t *a)
 }
 
 
+// changes between superslow_inlined and trigo():
+// - compute sin() only once for each i
+//
+void trigo(smat_t *a)
+{
+    int i, j;
+    double x,x2;
+    reset_smat_counter ();
+    double sine_i = 0;
+    // i is the column of a we're computing right now
+    for(i = 0; i < a->n; i++) {
+        sine_i = sin(M_PI/(i+1));
+        // j is the row of a we're computing right now
+        for(j = 0; j < a->n; j++) {
+            // First, compute f(A) for the element of a in question
+            x = a->mat[i * a->n + j];
+            int t = inc_smat_counter();
+            if ( ((i + j) % 3) & 0x1 ) {
+                x = x / (t + sine_i);
+            } else {
+                x = x * sine_i;
+            }
+            // Add this to the value of a we're computing and store it
+            x2 = a->mat[i * a->n + j];
+            x = x * x2;
+            a->mat[i * a->n + j] = x;
+        }
+    }
+}
+
+
 /**
  * Called by the driver to register your functions
  * Use add_function(func, description) to add your own functions
@@ -125,5 +156,6 @@ void register_functions()
     add_function(&superslow, "superslow: original function");
     // my functions
     add_function(&superslow_inlined, "inlined f() and direct array access");
+    add_function(&trigo, "trigo(), precompute sin()");
 }
 
