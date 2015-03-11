@@ -102,11 +102,11 @@ class V {
         F temp6 = 0;
         F temp7 = 0;
         F temp8 = 0;
+        unsigned limit = _n-UNROLLS;
         for (unsigned i = UNROLLS; i < _n; i++)
         {
-            unsigned limit = i-UNROLLS;
             unsigned j = 0;
-            r_i_tmp = _r1[i]; // probably done by compiler anyway
+            r_i_tmp = _r1[i]; // is probably done by compiler anyway
             for (; j < limit; j+=UNROLLS)
             {
                 temp1 = (r_i_tmp - _r1[j]);
@@ -130,7 +130,11 @@ class V {
             d *= temp1;
             d *= temp5;
         }
-        for (unsigned i = 0; i < UNROLLS; i++)
+        // calculate the first "UNROLL" iterations too
+        limit = UNROLLS;
+        if(_n < UNROLLS)
+            limit = _n;
+        for (unsigned i = 0; i < limit; i++)
             for (unsigned j = 0; j < i; j++)
                 d *= (_r1[i] - _r1[j]);
         return d;
@@ -214,8 +218,8 @@ int main(int argc, char **argv)
 {
     srand(time(NULL));
 
-    for(int i = 4; i <= 1024; i*=2)
-        test(5+i);
+    for(int i = 4; i <= 4000; i+=200)
+        test(i);
 
     return 0;
 }
