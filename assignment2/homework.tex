@@ -30,10 +30,59 @@
 
 \section*{Exercise 2 - Vandermonde determinants}
 
+Please see the last page for the used compiler version and flags.
+
 \subsection*{(a)}
 Number of iterations in the innermost loop: $\sum\limits_{j=1}^{n-1} j = \frac{(n-1)*n}{2} = \frac{n^2 -n}{2}$ \\
 With one subtraction (counted as one (-) addition?) and one multiplication per iteration this results in $\underline{OPCOUNT = n^2-n}$ floating point operations.  
 
+\subsection*{(b)}
+see vandermonde/vandermonde.cpp in the zip file.
 
+\subsection*{(c)}
+
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+\rowcolor{gray!30} 
+\textbf{N} & \textbf{Test passed} & \textbf{flops/cycle (optimized)} & \textbf{cycles (optimized)} & \textbf{flops/cycle} & \textbf{cycles} \\ 
+\hline 
+250 & 1 & 0.707 & 87995 & 0.226 & 275057 \\ \hline
+500 & 1 & 0.946 & 263608 & 0.321 & 776412 \\ \hline
+750 & 1 & 1.185 & 474189 & 0.399 & 1408923 \\ \hline
+1000 & 1 & 1.190 & 839504 & 0.399 & 2503534 \\ \hline
+1250 & 1 & 1.187 & 1315509 & 0.399 & 3908167 \\ \hline
+1500 & 1 & 1.193 & 1885449 & 0.399 & 5628666 \\ \hline
+1750 & 1 & 1.194 & 2563690 & 0.400 & 7660788 \\ \hline
+2000 & 1 & 1.197 & 3341222 & 0.400 & 10003156 \\ \hline
+2250 & 1 & 1.192 & 4244984 & 0.400 & 12660432 \\ \hline
+2500 & 1 & 1.195 & 5227964 & 0.400 & 15631834 \\ \hline
+2750 & 1 & 1.197 & 6314590 & 0.400 & 18911396 \\ \hline
+3000 & 1 & 1.197 & 7514408 & 0.400 & 22505678 \\ \hline
+3250 & 1 & 1.194 & 8846904 & 0.400 & 26414002 \\ \hline
+3500 & 1 & 1.196 & 10241834 & 0.400 & 30632718 \\ \hline
+3750 & 1 & 1.195 & 11763784 & 0.400 & 35165996 \\ \hline
+4000 & 1 & 1.196 & 13374570 & 0.400 & 40010042 \\ \hline
+\end{tabular} 
+
+\newpage
+
+\section*{Compiler Version and Flags}
+\label{compiler_version}
+If not stated otherwise all exercises have been compiled using: \\ 
+
+\underline{Compiler Version}
+\begin{verbatim}
+[fri@arc vandermonde]$ gcc --version
+gcc (GCC) 4.9.2 20150304 (prerelease)
+Copyright (C) 2014 Free Software Foundation, Inc.
+This is free software; see the source for copying conditions.  There is NO
+warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+[fri@arc vandermonde]$
+\end{verbatim}
+
+\underline{Used compiler flags} 
+\begin{verbatim}
+-O3 -mno-abm -fno-tree-vectorize
+\end{verbatim}
 
 \end{document}
