@@ -36,7 +36,7 @@
 void superslow (smat_t *a);
 void superslow_inlined(smat_t *a);
 void trigo(smat_t *a);
-void unroll1(smat_t *a);
+void unroll(smat_t *a);
 void register_functions ();
 
 #endif /* __COMP_H */

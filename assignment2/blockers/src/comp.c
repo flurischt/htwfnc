@@ -147,8 +147,9 @@ void trigo(smat_t *a)
     }
 }
 
+// changes between trigo() and unroll():
 // unroll the loop to compute 3 elements per iteration
-void unroll1(smat_t *a)
+void unroll(smat_t *a)
 {
     int i, j;
     double x,x2;
@@ -214,6 +215,7 @@ void unroll1(smat_t *a)
     }
 }
 
+
 /**
  * Called by the driver to register your functions
  * Use add_function(func, description) to add your own functions
@@ -225,6 +227,6 @@ void register_functions()
     // my functions
     add_function(&superslow_inlined, "inlined f() and direct array access");
     add_function(&trigo, "trigo(), compute sin() only n times, and stop using *smat_counter()");
-    add_function(&unroll1, "unroll");
+    add_function(&unroll, "unroll");
 }
 
