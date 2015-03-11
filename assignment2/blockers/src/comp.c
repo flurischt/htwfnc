@@ -44,35 +44,74 @@
  * counter to perform the devision.
  */
 double f (smat_t * a, int i, int j) {
-	double x = get_elt(a, i, j);
-	int t = inc_smat_counter();
-	if ( ((i + j) % 3) & 0x1 ) {
-		return x / (t + sin(M_PI/(i+1)));
-	} else {
-		return x * sin(M_PI/(i+1));
-	}
+    double x = get_elt(a, i, j);
+    int t = inc_smat_counter();
+    if ( ((i + j) % 3) & 0x1 ) {
+        return x / (t + sin(M_PI/(i+1)));
+    } else {
+        return x * sin(M_PI/(i+1));
+    }
 }
 
 /* This is the function you need to optimize. It takes one
    square matrix as input
- */
+   */
 void superslow(smat_t *a)
 {
-	int i, j;
-	double x,x2;
-	reset_smat_counter ();
-	// i is the column of a we're computing right now
-	for(i = 0; i < a->n; i++) {
-		// j is the row of a we're computing right now
-		for(j = 0; j < a->n; j++) {
-			// First, compute f(A) for the element of a in question
-			x = f (a, i, j);
-			// Add this to the value of a we're computing and store it
-			x2 = get_elt(a, i, j);
-			x = x * x2;
-			set_elt(a, i, j, x);
-		}
-	}
+    int i, j;
+    double x,x2;
+    reset_smat_counter ();
+    // i is the column of a we're computing right now
+    for(i = 0; i < a->n; i++) {
+        // j is the row of a we're computing right now
+        for(j = 0; j < a->n; j++) {
+            // First, compute f(A) for the element of a in question
+            x = f (a, i, j);
+            // Add this to the value of a we're computing and store it
+            x2 = get_elt(a, i, j);
+            x = x * x2;
+            set_elt(a, i, j, x);
+        }
+    }
+}
+
+extern int smat_counter;
+
+//
+// changes to superslow() 
+//  - no call to f()
+//  - no calls to get_elt and set_elt 
+//        (and therefore unnecessary no boundary checks)
+//
+void superslow_inlined(smat_t *a)
+{
+    int i, j;
+    double x,x2;
+    reset_smat_counter ();
+    // i is the column of a we're computing right now
+    for(i = 0; i < a->n; i++) {
+        // j is the row of a we're computing right now
+        for(j = 0; j < a->n; j++) {
+            // First, compute f(A) for the element of a in question
+            // #####BEGIN previous f() call
+            //x = f (a, i, j);
+            //x = get_elt(a, i, j);
+            x = a->mat[i * a->n + j];
+            int t = inc_smat_counter();
+            if ( ((i + j) % 3) & 0x1 ) {
+                x = x / (t + sin(M_PI/(i+1)));
+            } else {
+                x = x * sin(M_PI/(i+1));
+            }
+            // #####END f() call
+            // Add this to the value of a we're computing and store it
+            //x2 = get_elt(a, i, j);
+            x2 = a->mat[i * a->n + j];
+            x = x * x2;
+            //set_elt(a, i, j, x);
+            a->mat[i * a->n + j] = x;
+        }
+    }
 }
 
 
@@ -82,10 +121,9 @@ void superslow(smat_t *a)
  */
 void register_functions()
 {
-	// Registers comp_superslow with the driver
-	add_function(&superslow, "superslow: original function");
-
-	//Add your functions here
-	// add_function(&superslow2, "superslow: Optimization X");
+    // Registers comp_superslow with the driver
+    add_function(&superslow, "superslow: original function");
+    // my functions
+    add_function(&superslow_inlined, "inlined f() and direct array access");
 }
 
