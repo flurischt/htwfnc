@@ -89,23 +89,50 @@ class V {
         return d;
     }
 
+#define UNROLLS 8
+
     F det_opt() const {
         F d = 1;
-        F temp = 0;
-        unsigned limit=0;
-        unsigned j=0;
-        for (unsigned i = 1; i < _n; i++)
+        F r_i_tmp = 0;
+        F temp1 = 0;
+        F temp2 = 0;
+        F temp3 = 0;
+        F temp4 = 0;
+        F temp5 = 0;
+        F temp6 = 0;
+        F temp7 = 0;
+        F temp8 = 0;
+        for (unsigned i = UNROLLS; i < _n; i++)
         {
-            temp = _r1[i];
-            limit = i-1;
-            for (j = 0; j < limit; j+=2)
+            unsigned limit = i-UNROLLS;
+            unsigned j = 0;
+            r_i_tmp = _r1[i]; // probably done by compiler anyway
+            for (; j < limit; j+=UNROLLS)
             {
-                d *= (temp - _r1[j]) * (temp - _r1[j+1]);
+                temp1 = (r_i_tmp - _r1[j]);
+                temp2 = (r_i_tmp - _r1[j+1]);
+                temp3 = (r_i_tmp - _r1[j+2]);
+                temp4 = (r_i_tmp - _r1[j+3]);
+                temp5 = (r_i_tmp - _r1[j+4]);
+                temp6 = (r_i_tmp - _r1[j+5]);
+                temp7 = (r_i_tmp - _r1[j+6]);
+                temp8 = (r_i_tmp - _r1[j+7]);
+                temp1 *= temp2;
+                temp3 *= temp4;
+                temp5 *= temp6;
+                temp7 *= temp8;
             }
-            // finish remaining element
-            for(;j<i;j++)
-                d *= (temp - _r1[j]);
+            // finish remaining elements
+            for(; j<i; j++)
+                d *= (_r1[i] - _r1[j]);
+            temp1 *= temp3;
+            temp5 *= temp7;
+            d *= temp1;
+            d *= temp5;
         }
+        for (unsigned i = 0; i < UNROLLS; i++)
+            for (unsigned j = 0; j < i; j++)
+                d *= (_r1[i] - _r1[j]);
         return d;
     }
 
