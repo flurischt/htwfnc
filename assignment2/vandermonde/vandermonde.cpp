@@ -146,7 +146,8 @@ class V {
 
         F d_ref = det(), d = det_opt();
 
-        double err = fabs(d - d_ref);
+        double err = fabs(d - d_ref) / d_ref;
+        //double err = fabs(d - d_ref);
         bool succ = true;
 
         if(err > threshold) {
