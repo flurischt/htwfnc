@@ -12,6 +12,8 @@
 #define CYCLES_REQUIRED 1e7
 #define REP 15
 
+#define OUTPUT_LATEX_TABULAR
+
 #include "tsc_x86.h"
 
 using namespace std;
@@ -168,11 +170,14 @@ void test(size_t n)
 
     double cycles = 0.;
     unsigned num_runs = 2, multiplier = 1;
+    bool passed = v.validate(1e-5);
 
-    if( !v.validate(1e-5) )
+    if( !passed)
         exit(EXIT_FAILURE);
     else
-        cout << "Test passed." << endl;
+    {
+        //cout << "Test passed." << endl;
+    }
 
     init_tsc();
 
@@ -208,9 +213,14 @@ void test(size_t n)
 
     if (r>0) ns << r;
 
-    cout << "Computation with N =" << n <<  " - Performance [flops/cycle]: " << median(perfList) << endl;
-    cout << "Op count [flops]: " << OPCOUNT << endl;
-    cout << "Runtime [cycle]: " << median(cyclesList) << endl;
+//    cout << "Computation with N =" << n <<  " - Performance [flops/cycle]: " << median(perfList) << endl;
+//    cout << "Op count [flops]: " << OPCOUNT << endl;
+//    cout << "Runtime [cycle]: " << median(cyclesList) << endl;
+#ifdef OUTPUT_LATEX_TABULAR
+    cout << n << " & " << passed << " & " << std::fixed << std::setprecision(3) << median(perfList) << " & "  << std::setprecision(0)<< median(cyclesList) << " \\\\ \\hline" << endl;
+#else
+    cout << n << "\t" << passed << "\t" << std::fixed << std::setprecision(3) << median(perfList) << "\t"  << std::setprecision(0)<< median(cyclesList) << endl;
+#endif
 
 }
 
@@ -218,7 +228,7 @@ int main(int argc, char **argv)
 {
     srand(time(NULL));
 
-    for(int i = 4; i <= 4000; i+=200)
+    for(int i = 250; i <= 4000; i+=250)
         test(i);
 
     return 0;
