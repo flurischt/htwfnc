@@ -147,6 +147,67 @@ void trigo(smat_t *a)
     }
 }
 
+void unroll1(smat_t *a)
+{
+    int i, j;
+    double x,x2;
+    double x_2, x2_2;
+    smat_counter = 0;
+    double sine_i = 0;
+    // i is the column of a we're computing right now
+    for(i = 0; i < a->n; i++) {
+        sine_i = sin(M_PI/(i+1));
+        // j is the row of a we're computing right now
+        for(j = 0; j < a->n-1; j+=2) {
+            // First, compute f(A) for the element of a in question
+            x2 = x = a->mat[i * a->n + j];
+            x2_2 = x_2 = a->mat[i * a->n + j + 1];
+            smat_counter += 2;
+            int t = smat_counter++;
+            // x
+            if ( ((i + j) % 3) & 0x1 ) {
+                x = x / (t + sine_i);
+                x_2 = x_2 * sine_i;
+                smat_counter += 3;
+            } else if ( ((i + j + 1) % 3) & 0x1 ) {
+                x = x * sine_i;
+                smat_counter += 2;
+                t = smat_counter++;
+                x_2 = x_2 / (t + sine_i);
+            } else {
+                x = x * sine_i;
+                x_2 = x_2 * sine_i;
+                smat_counter += 3;
+            }
+            // x2
+                        //if ( ((i + j + 1) % 3) & 0x1 ) {
+            //    x_2 = x_2 / (t + sine_i);
+            //} else {
+            //    x_2 = x_2 * sine_i;
+            //}
+            // Add this to the value of a we're computing and store it
+            x = x * x2;
+            x_2 = x_2 * x2_2;
+            a->mat[i * a->n + j] = x;
+            a->mat[i * a->n + j+1] = x_2;
+        }
+        // calculate remaining elements
+        for(; j < a->n; j++) {
+            // First, compute f(A) for the element of a in question
+            x2 = x = a->mat[i * a->n + j];
+            smat_counter += 2;
+            int t = smat_counter++;
+            if ( ((i + j) % 3) & 0x1 ) {
+                x = x / (t + sine_i);
+            } else {
+                x = x * sine_i;
+            }
+            // Add this to the value of a we're computing and store it
+            x = x * x2;
+            a->mat[i * a->n + j] = x;
+        }
+    }
+}
 
 /**
  * Called by the driver to register your functions
@@ -159,5 +220,6 @@ void register_functions()
     // my functions
     add_function(&superslow_inlined, "inlined f() and direct array access");
     add_function(&trigo, "trigo(), compute sin() only n times, and stop using *smat_counter()");
+    add_function(&unroll1, "unroll");
 }
 
