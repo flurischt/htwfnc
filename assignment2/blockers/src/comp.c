@@ -147,6 +147,7 @@ void trigo(smat_t *a)
     }
 }
 
+// unroll the loop to compute 3 elements per iteration
 void unroll1(smat_t *a)
 {
     int i, j;
