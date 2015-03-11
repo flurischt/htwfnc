@@ -221,14 +221,14 @@ void unroll2(smat_t *a)
     double x,x2;
     double x_2, x2_2; // I know, stupid variable naming
     double x_3, x2_3; // even worse... (it was late...)
-    double x_4, x_4tmp, x_5, x_5tmp, x_6, x_6tmp, x_7, x_7tmp;
+    double x_4, x_4tmp, x_5, x_5tmp, x_6, x_6tmp, x_7, x_7tmp, x_8, x_8tmp, x_9, x_9tmp;
     smat_counter = 0;
     double sine_i = 0;
     // i is the column of a we're computing right now
     for(i = 0; i < a->n; i++) {
         sine_i = sin(M_PI/(i+1));
         // j is the row of a we're computing right now
-        for(j = 0; j < a->n-6; j+=7) {
+        for(j = 0; j < a->n-8; j+=9) {
             // First, compute f(A) for the element of a in question
             x2 = x = a->mat[i * a->n + j];
             x2_2 = x_2 = a->mat[i * a->n + j + 1];
@@ -237,6 +237,8 @@ void unroll2(smat_t *a)
             x_5 = x_5tmp = a->mat[i * a->n + j + 4];
             x_6 = x_6tmp = a->mat[i * a->n + j + 5];
             x_7 = x_7tmp = a->mat[i * a->n + j + 6];
+            x_8 = x_8tmp = a->mat[i * a->n + j + 7];
+            x_9 = x_9tmp = a->mat[i * a->n + j + 8];
             smat_counter += 2;
             int t = smat_counter++;
             // x
@@ -252,7 +254,10 @@ void unroll2(smat_t *a)
                 x_6 = x_6 * sine_i;
                 smat_counter += 5;
                 t = smat_counter++;
-                x_7 = x_7 / (t + sine_i);
+                x_7 = x_7 / (t + sine_i); // same as x and x_4
+                x_8 = x_8 * sine_i;
+                x_9 = x_9 * sine_i;
+                smat_counter += 6;
             } else if ( ((i + j + 1) % 3) & 0x1 ) {
                 x = x * sine_i;
                 smat_counter += 2;
@@ -264,8 +269,12 @@ void unroll2(smat_t *a)
                 t = smat_counter++;
                 x_5 = x_5 / (t + sine_i); // same formula as x_2
                 x_6 = x_6 * sine_i;
-                smat_counter += 6;
+                smat_counter += 8;
                 x_7 = x_7 * sine_i;
+                t = smat_counter++;
+                x_8 = x_8 / (t + sine_i);
+                x_9 = x_9 * sine_i;
+                smat_counter += 3;
             } else {
                 x = x * sine_i;
                 x_2 = x_2 * sine_i;
@@ -278,7 +287,10 @@ void unroll2(smat_t *a)
                 t = smat_counter++;
                 x_6 = x_6 / (t + sine_i); // same formula as x_3
                 x_7 = x_7 * sine_i;
-                smat_counter += 3;
+                smat_counter += 8;
+                t = smat_counter++;
+                x_8 = x_8 * sine_i;
+                x_9 = x_9 / (t+sine_i);
             }
             // Add this to the value of a we're computing and store it
             x = x * x2;
@@ -288,6 +300,8 @@ void unroll2(smat_t *a)
             x_5 = x_5 * x_5tmp;
             x_6 = x_6 * x_6tmp;
             x_7 = x_7 * x_7tmp;
+            x_8 = x_8 * x_8tmp;
+            x_9 = x_9 * x_9tmp;
             a->mat[i * a->n + j] = x;
             a->mat[i * a->n + j+1] = x_2;
             a->mat[i * a->n + j+2] = x_3;
@@ -295,6 +309,8 @@ void unroll2(smat_t *a)
             a->mat[i * a->n + j+4] = x_5;
             a->mat[i * a->n + j+5] = x_6;
             a->mat[i * a->n + j+6] = x_7;
+            a->mat[i * a->n + j+7] = x_8;
+            a->mat[i * a->n + j+8] = x_9;
         }
         // calculate remaining elements
         for(; j < a->n; j++) {
