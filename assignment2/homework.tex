@@ -38,9 +38,10 @@ Number of iterations in the innermost loop: $\sum\limits_{j=1}^{n-1} j = \frac{(
 With one subtraction (counted as one (-) addition?) and one multiplication per iteration this results in $\underline{OPCOUNT = n^2-n}$ floating point operations.  
 
 \subsection*{(b)}
-see vandermonde/vandermonde.cpp in the zip file.
+see vandermonde/vandermonde.cpp in the zip file. \\
+The original implementation looses a lot of performance due to the latency of the two operations in the loop. Each multiplication blocks the next although there is no dependency between the two. I tried to unroll the loop to give the processor a chance to execute multiple muls and divs parallel.
 
-\subsection*{(c) / (d)}
+\subsection*{(c) / (d)}	
 
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -62,9 +63,12 @@ see vandermonde/vandermonde.cpp in the zip file.
 4096 & 1 & 1.196 & 14018594 & 0.400 & 41957752  \\ \hline
 \end{tabular} 
 
+As mentioned in (b) I unrolled the loop to benefit from multiple parallel multiplications (with parallel I mean one per cycle but 'parallely' waiting during their latency). From the lecture notes I took the formula $\#accumulators = ceil(latency/cycles per issue)$ with a $latency=5$ and $cycles per issue=1$ for my Ivy Bridge i7 processor. So i started with 5 accumulators but increased them in the end because I still saw an improvement in my measurements. As one can see in the above table I got a speedup fo about factor 3. My implementation only uses accumulators for the rows i greater than 8. So for the the first 8 rows there's still the old implementation (see code). That's why we start to see the factor three speedup with bigger matrices starting at $n=32$.
 \begin{itemize}
 \item a
 \end{itemize}
+
+
 
 \subsection*{Exercise 3 - Optimization Blockers}
 \subsection*{(a)}
@@ -98,7 +102,7 @@ The table above shows the flops/cycle for each of my four functions and the supe
 \\ \\
 It's very satisfactory to see that my last optimization (unroll2) got a speedup of factor 50 compared to the superslow function. Although I knew that trigonometric function are expensive I was surprised of the impact it had on my functions.  The step from 'f() inlined' to 'trigo()' shows this optimization. With optimization flags I got a speedup of factor ten. without I stillt got a speedup of factor three. Comparing the 'trigo' and 'unroll2' columns in the two rows shows how the compiler optimization flags help. The bottom row improves a little by unrolling but the row with optimization flags benefits a lot from the unrolled function due to the fact that the matrix elements can be calculated  (almost) independently from each other. There's no dependency between the elements as long as the  smat\_counter is correctly set. \\
 
-A word about unrolling. Under the assumption that my Ivy Bridge processor has latency 5 for multiplication and needs 1 cycle per issue I thought it would be best to use $\#accumulators = ceil(latency/cycles per issue) = 5 / 1 = 5$ as a good number of accumulators. 'unroll' starts with three accumulators because it's easy to implement. I then went beyond those 5 accumulators because I was still seeing improvement with each unroll. see the unroll2 function for details.
+A word about unrolling. Under the assumption that my Ivy Bridge processor has latency 5 for multiplication and needs 1 cycle per issue I thought it would be best to use $\#accumulators = ceil(latency/cycles per issue) = 5 / 1 = 5$ as a good number of accumulators (formula from the lecture). 'unroll' starts with three accumulators because it's easy to implement. I then went beyond those 5 accumulators because I was still seeing improvement with each unroll. see the unroll2 function for details.
 
 \subsection*{Exercise 4 - Locality of Gaussian Elimination }
 
