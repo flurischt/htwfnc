@@ -63,12 +63,7 @@ The original implementation looses a lot of performance due to the latency of th
 4096 & 1 & 1.196 & 14018594 & 0.400 & 41957752  \\ \hline
 \end{tabular} 
 
-As mentioned in (b) I unrolled the loop to benefit from multiple parallel multiplications (with parallel I mean one per cycle but 'parallely' waiting during their latency). From the lecture notes I took the formula $\#accumulators = ceil(latency/cycles per issue)$ with a $latency=5$ and $cycles per issue=1$ for my Ivy Bridge i7 processor. So i started with 5 accumulators but increased them in the end because I still saw an improvement in my measurements. As one can see in the above table I got a speedup fo about factor 3. My implementation only uses accumulators for the rows i greater than 8. So for the the first 8 rows there's still the old implementation (see code). That's why we start to see the factor three speedup with bigger matrices starting at $n=32$.
-\begin{itemize}
-\item a
-\end{itemize}
-
-
+As mentioned in (b) I unrolled the loop to benefit from multiple parallel multiplications (with parallel I mean one per cycle but 'parallely' waiting during their latency). From the lecture notes I took the formula $\#accumulators = ceil(latency/cycles per issue)$ with a $latency=5$ and $cycles per issue=1$ for my Ivy Bridge i7 processor. So i started with 5 accumulators but increased them in the end because I still saw an improvement in my measurements. As one can see in the above table I got a speedup of about factor 3. My implementation only uses accumulators for the rows i greater than 8. So for the first 8 rows there's still the old implementation (see code). That's why we start to see the factor three speedup with bigger matrices starting at $n=32$.	
 
 \subsection*{Exercise 3 - Optimization Blockers}
 \subsection*{(a)}
