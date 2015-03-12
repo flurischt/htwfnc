@@ -215,6 +215,9 @@ void unroll(smat_t *a)
     }
 }
 
+//
+// more unrolling to check if we still get a speedup
+//
 void unroll2(smat_t *a)
 {
     int i, j;
