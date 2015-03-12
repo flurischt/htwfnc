@@ -39,7 +39,7 @@ With one subtraction (counted as one (-) addition?) and one multiplication per i
 
 \subsection*{(b)}
 see vandermonde/vandermonde.cpp in the zip file. \\
-The original implementation looses a lot of performance due to the latency of the two operations in the loop. Each multiplication blocks the next although there is no dependency between the two. I tried to unroll the loop to give the compiler/processor a chance to execute multiple multiplications and subtractions parallel.
+The original implementation looses a lot of performance due to the latency of the two operations in the loop. Each multiplication blocks the next although there is no dependency between the two. I tried to unroll the loop to give the compiler/processor a chance to execute multiple multiplications and subtractions 'parallelly' (see below).
 
 \subsection*{(c) / (d)}	
 
