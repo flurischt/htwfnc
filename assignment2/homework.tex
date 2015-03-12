@@ -39,7 +39,7 @@ With one subtraction (counted as one (-) addition?) and one multiplication per i
 
 \subsection*{(b)}
 see vandermonde/vandermonde.cpp in the zip file. \\
-The original implementation looses a lot of performance due to the latency of the two operations in the loop. Each multiplication blocks the next although there is no dependency between the two. I tried to unroll the loop to give the processor a chance to execute multiple muls and divs parallel.
+The original implementation looses a lot of performance due to the latency of the two operations in the loop. Each multiplication blocks the next although there is no dependency between the two. I tried to unroll the loop to give the compiler/processor a chance to execute multiple multiplications and subtractions parallel.
 
 \subsection*{(c) / (d)}	
 
@@ -68,7 +68,7 @@ As mentioned in (b) I unrolled the loop to benefit from multiple parallel multip
 \subsection*{Exercise 3 - Optimization Blockers}
 \subsection*{(a)}
 Here's an overview of the things I optimized. Please see the code in the zip-file for details.
-Each optimized function has a comment what has been imporoved to the previous function. \\
+Each optimized function has a comment what has been improved compared to the previous function. \\
 Optimized:
 \begin{itemize}
 \item removed the calls to f() by inlining
@@ -95,7 +95,7 @@ Please see the code in the zip file. The used compiler version and optimizer fla
 \end{tabular}  \\ \\
 The table above shows the flops/cycle for each of my four functions and the superslow function as a baseline. Going from left to right each column represents a function that took the function on its left and did some imporovements. 'unroll2' on the right side is the last and best optimization. 'f() inlined' is the function where calls to f() have been removed. additionally r/rw access to the matrix-elements go directly to the array instead of calling the set/get functions. 'trigo' decreases the number of sin() computations by reusing the values for each row. 'unroll' unrolled the loop 3 times. 'unroll2' unrolled the loop some more time to benefit from the fact that there is no dependency between the different matrix elements.
 \\ \\
-It's very satisfactory to see that my last optimization (unroll2) got a speedup of factor 50 compared to the superslow function. Although I knew that trigonometric function are expensive I was surprised of the impact it had on my functions.  The step from 'f() inlined' to 'trigo' shows this optimization. With optimization flags I got a speedup of factor ten by only reusing the sine values. Without I still got a speedup of factor three. Comparing the 'trigo' and 'unroll2' columns in the two rows shows how the compiler optimization flags help. The bottom row improves a bit by unrolling but the row with optimization flags benefits a lot from the unrolled function due to the fact that the matrix elements can be calculated  (almost) independently from each other. There's no dependency between the elements as long as the  smat\_counter is correctly set. \\
+It's very satisfactory to see that my last optimization (unroll2) got a speedup of factor 50 compared to the superslow function. Although I knew that trigonometric functions are expensive I was surprised of the impact it had on my functions.  The step from 'f() inlined' to 'trigo' shows this optimization. With optimization flags I got a speedup of factor ten by only reusing the sine values. Without I still got a speedup of factor three. Comparing the 'trigo' and 'unroll2' columns in the two rows shows how the compiler optimization flags help. The bottom row improves a bit by unrolling but the row with optimization flags benefits a lot from the unrolled function due to the fact that the matrix elements can be calculated  (almost) independently from each other. There's no dependency between the elements as long as the  smat\_counter is correctly set. \\
 
 A word about unrolling. Under the assumption that my Ivy Bridge processor has latency 5 for multiplication and needs 1 cycle per issue I thought it would be best to use $\#accumulators = ceil(latency/cycles per issue) = 5 / 1 = 5$ as a good number of accumulators (formula from the lecture). 'unroll' starts with three accumulators because it's easy to implement. I then went beyond those 5 accumulators because I was still seeing improvement with each unroll. see the unroll2 function for details.
 
