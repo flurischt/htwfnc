@@ -11,6 +11,7 @@
 \usepackage{titlesec}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{listings}
 %\graphicspath{ {plots/} }
 
 % kein einrücken bei neuen absätzen
@@ -39,7 +40,7 @@ With one subtraction (counted as one (-) addition?) and one multiplication per i
 \subsection*{(b)}
 see vandermonde/vandermonde.cpp in the zip file.
 
-\subsection*{(c)}
+\subsection*{(c) / (d)}
 
 \begin{tabular}{|c|c|c|c|c|c|}
 \hline
@@ -60,6 +61,84 @@ see vandermonde/vandermonde.cpp in the zip file.
 2048 & 1 & 1.197 & 3501235 & 0.400 & 10492388  \\ \hline
 4096 & 1 & 1.196 & 14018594 & 0.400 & 41957752  \\ \hline
 \end{tabular} 
+
+\begin{itemize}
+\item a
+\end{itemize}
+
+\subsection*{Exercise 3 - Optimization Blockers}
+\subsection*{(a)}
+Here's an overview of the things I optimized. Please see the code in the zip-file for details.
+Each optimized function has a comment what has been imporoved to the previous function. \\
+Optimized:
+\begin{itemize}
+\item removed the calls to f() by inlining
+\item directly access the matrix-elements instead of using get/set\_elt (and therefore bypassing the unnecessary range-checks)
+\item compute sin() only once per i-value
+\item removed the *\_smat\_counter() calls by directly accessing the variable
+\item unrolled the loop several times to benefit from ILP
+\end{itemize}
+
+\subsection*{(b), (c), (d)}
+Please see the code in the zip file. The used compiler version and optimizer flags can be found on the last page
+
+\subsection*{(e)}
+
+\begin{tabular}{|l|c|c|c|c|c|}
+\hline 
+\rowcolor{gray!30} 
+ (flops/cycle) & \textbf{superslow} & \textbf{f() inlined} & \textbf{trigo()} & \textbf{unroll} & \textbf{unroll2} \\ 
+\hline 
+\cellcolor{gray!30} \textbf{optimization flags} & 0.0174 & 0.0333 & 0.3180 & 0.4719 & 0.5828 \\ 
+\hline 
+\cellcolor{gray!30} \textbf{no optimization flags} & 0.0146 & 0.0240 & 0.0766 & 0.0918 & 0.1016 \\ 
+\hline 
+\end{tabular}  \\
+The table above shows the flops/cycle for each of my four functions and the superslow() function as a baseline. 'f() inlined' is the function where calls to f() have been removed. additionally r/rw access to the matrix-elements go directly to the array instead of calling the functions. 'trigo()' decreases the number of sin() computations by reusing the values for each row. 'unroll()' unrolled the loop 3 times. 'unroll2()' unrolled the loop some more time to benefit from the fact that there is no dependency between the different matrix elements.
+\\
+
+\subsection*{Exercise 4 - Locality of Gaussian Elimination }
+
+\begin{lstlisting}[ numbers=left,]
+double A[N][N], tmp ;
+for (int k=0 ; k<N; k++){
+    double max_p = abs(A[k][k]);
+    int ind_p = k;
+    // Find Pivot
+    for(int i = k+1; i < N; i++){
+        tmp = abs (A[i][k]) ;
+        if (tmp > max_p){
+            max_p = tmp ;
+            ind_p = i ;
+        }
+    }
+    // // Swap row containing pivot with k-th row
+    for (int j = 0 ; j < N; j++){
+        tmp = A[ind_p][j] ;
+        A[ind_p][j] = A[k][j] ;
+        A[k][j] = tmp ;
+    }
+    // Main Loop for Gaussian Elimination
+    for (int i = k+1; i < N; i ++){
+        for (int j = k+1; j < N; j ++){
+            A[i][j] = A[i][j] - A[k][j] * (A[i][k] / A[k][k]) ;
+        }
+        A[i][k] = 0 ;
+    }
+}
+\end{lstlisting}
+
+C is row-major. Searching for the pivot on line 6/7 does therefore not benefit from spatial locality because it accesses columns. But inside the 'Find Pivot' for-loop we have temporal locality because the memory location A[i][k] is used several times (as the the tmp variable). \\
+The for loop to swap rows on lines 14 to 18 has spatial locality. The A[ind\_p] and A[k] rows are accessed. \\
+The accesses to A[i][j] on line 22 has temporal locality. It is read, therefore stored in cache and later written (which is written to the cache too in our architecture). On the same line A[i][j] and A[k][j] also have spatial locality because the rows i and k are accessed in the correct order. For small j (j=k+1) there could be spatial locality when A[i][k] and A[i][j] are in the same block. With increasing j and depending on the blocksize (probably 8 doubles) this locality is lost. \\
+\textbf{Summary:}
+\begin{itemize}
+\item temporal locality inside the 'Find pivot' loop
+\item lines 14 to 18 has spatial locality
+\item line 22 has temporal locality (A[i][j] is read and written)
+\item line 22 spatial locality for A[i][j] and A[k][j] because they are accessed as rows
+\item line 22 A[i][k] and A[i][j] may benefit from spatial locality when j and k are near (when abs(k - j) is below 8 means they are in the same block )
+\end{itemize}
 
 \newpage
 
@@ -82,9 +161,13 @@ warranty; not even for MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 -O3 -m64 -mno-abm -fno-tree-vectorize
 \end{verbatim}
 
-\underline{Used compiler flags for \textbf{optimization blockers} exercise} 
+\underline{Used compiler flags for \textbf{optimization blockers} exercise (a),(b),(c)} 
 \begin{verbatim}
 -O3 -m64 -march=corei7-avx
 \end{verbatim}
 
+\underline{Used compiler flags for \textbf{optimization blockers} exercise (d)} 
+\begin{verbatim}
+-O0
+\end{verbatim}
 \end{document}
