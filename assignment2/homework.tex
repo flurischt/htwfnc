@@ -35,7 +35,7 @@ Please see the last page for the used compiler version and flags.
 
 \subsection*{(a)}
 Number of iterations in the innermost loop: $\sum\limits_{j=1}^{n-1} j = \frac{(n-1)*n}{2} = \frac{n^2 -n}{2}$ \\
-With one subtraction (counted as one (-) addition?) and one multiplication per iteration this results in $\underline{OPCOUNT = n^2-n}$ floating point operations.  
+With one subtraction (counted as one (negative) addition?) and one multiplication per iteration this results in a total of $\underline{OPCOUNT = n^2-n}$ floating point operations. More detailed: there are $\frac{n^2 -n}{2}$ floating point multiplications and $\frac{n^2 -n}{2}$ subtractions. 
 
 \subsection*{(b)}
 see vandermonde/vandermonde.cpp in the zip file. \\
