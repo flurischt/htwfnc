@@ -1,0 +1,117 @@
+Family: 6
+FPU:  6
+Model: 58
+Stepping: 9
+Type: 0
+AMD Family: 0
+AMD Model: 0
+AMD Stepping: 0
+Features: BFEBFBFF
+Extended Features: 7FBAE3FF
+Extended Intel Features: 28100800
+Extended AMD Features: 19E3F3FF
+Brand index: 0
+CLFLUSH Line Size: 8
+Number of Logical Processors: 16
+APIC ID: 7
+Clockspeed: 2594 MHz
+Vendor ID: GenuineIntel
+Processor Brand String:       Intel(R) Core(TM) i7-3720QM CPU @ 2.60GHz
+Serial number: 0
+Maximum CPUID input value: 0000000D
+Maximum extended CPUID input value: 80000008
+Cache descriptors:
+ 5A: Unknown cache descriptor
+ 03: Data TLB: 4K-Byte Pages, 4-way set associative, 64 entries
+ 76: Unknown cache descriptor
+ FF: Unknown cache descriptor
+ B2: Unknown cache descriptor
+ F0: 64-byte Prefetching
+ CA: Unknown cache descriptor
+
+Type string: Original OEM Processor
+Brand string: This processor does not support the brand identification feature
+FPU: 1
+MMX: 1
+Extended MMX: 1
+3DNow!: 0
+Extended 3DNow!: 0
+SSE: 1
+SSE2: 1
+SSE3: 1
+SSSE3: 1
+SSE4.1: 1
+SSE4.2: 1
+64-bit: 1
+HyperThreading: 1
+Serial number: 0
+L1 code TLB (large) entries: 0
+L1 code TLB (large) associativity: 0
+L1 data TLB (large) entries: 0
+L1 data TLB (large) associativity: 0
+L1 code TLB entries: 0
+L1 code TLB associativity: 0
+L1 data TLB entries: 64
+L1 data TLB associativity: 4
+L2 data TLB (large) entries: 0
+L2 data TLB (large) associativity: 0
+L2 data TLB entries: 0
+L2 data TLB associativity: 0
+L1 code linesize: 0 bytes
+L1 code lines per tag: 0
+L1 code associativity: 0
+L1 code size: 0 KB
+L1 data linesize: 0 bytes
+L1 data lines per tag: 0
+L1 data associativity: 0
+L1 data size: 0 KB
+L2 data linesize: 64 bytes
+L2 data lines per tag: 1
+L2 data associativity: 8
+L2 data size: 256 KB
+L3 data linesize: 0 bytes
+L3 data lines per tag: 0
+L3 data associativity: 0
+L3 data size: 0 KB
+
+
+CPU frequency estimated at 2594 MHz
+If that is not the correct value for your CPU, please specify it as an input argument in MHz
+
+superslow: original function:
+Size   300:       13152749.030 cycles,  0.0137 F/C | estimated:  0.0051 sec,   35.500 MFLOPs
+Size   600:       48240347.300 cycles,  0.0149 F/C | estimated:  0.0186 sec,   38.716 MFLOPs
+Size   800:       87030731.425 cycles,  0.0147 F/C | estimated:  0.0336 sec,   38.151 MFLOPs
+Size  1000:      133947654.550 cycles,  0.0149 F/C | estimated:  0.0516 sec,   38.732 MFLOPs
+Average: 0.0146 F/C
+
+inlined f() and direct array access:
+Size   300:        7649934.120 cycles,  0.0235 F/C | estimated:  0.0029 sec,   61.036 MFLOPs
+Size   600:       29850759.900 cycles,  0.0241 F/C | estimated:  0.0115 sec,   62.567 MFLOPs
+Size   800:       52879105.350 cycles,  0.0242 F/C | estimated:  0.0204 sec,   62.791 MFLOPs
+Size  1000:       82471025.100 cycles,  0.0243 F/C | estimated:  0.0318 sec,   62.907 MFLOPs
+Average: 0.0240 F/C
+
+trigo(), compute sin() only n times, and stop using *smat_counter():
+Size   300:        2344241.920 cycles,  0.0768 F/C | estimated:  0.0009 sec,  199.177 MFLOPs
+Size   600:        9404401.900 cycles,  0.0766 F/C | estimated:  0.0036 sec,  198.596 MFLOPs
+Size   800:       16633706.900 cycles,  0.0770 F/C | estimated:  0.0064 sec,  199.614 MFLOPs
+Size  1000:       26242385.150 cycles,  0.0762 F/C | estimated:  0.0101 sec,  197.695 MFLOPs
+Average: 0.0766 F/C
+
+unroll:
+Size   300:        1950604.440 cycles,  0.0923 F/C | estimated:  0.0008 sec,  239.372 MFLOPs
+Size   600:        7897321.600 cycles,  0.0912 F/C | estimated:  0.0030 sec,  236.495 MFLOPs
+Size   800:       13811664.750 cycles,  0.0927 F/C | estimated:  0.0053 sec,  240.400 MFLOPs
+Size  1000:       21970221.950 cycles,  0.0910 F/C | estimated:  0.0085 sec,  236.138 MFLOPs
+Average: 0.0918 F/C
+
+unroll2:
+Size   300:        1785627.560 cycles,  0.1008 F/C | estimated:  0.0007 sec,  261.488 MFLOPs
+Size   600:        7075065.550 cycles,  0.1018 F/C | estimated:  0.0027 sec,  263.981 MFLOPs
+Size   800:       12577808.050 cycles,  0.1018 F/C | estimated:  0.0048 sec,  263.982 MFLOPs
+Size  1000:       19620991.300 cycles,  0.1019 F/C | estimated:  0.0076 sec,  264.411 MFLOPs
+Average: 0.1016 F/C
+
+Best: unroll2
+Perf: 0.1016 F/C
