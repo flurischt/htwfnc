@@ -123,4 +123,11 @@ The following table shows the hit/miss pattern when 4 columns are processed:\\
 \hline 
 \end{tabular}  \\
 This results in a cache miss rate of $\underline{9/12=0.75}$
+
+\section*{Exercise 3 - Cache mechanics}
+\subsection*{(a)}
+\subsubsection*{i}
+Four photon\_t fit into one cache block. For four consecutive photon\_t the write to the first irr[0] will miss. Writes to the remaining irr[1], irr[2], theta, phi and all writes for the remaining three photon\_t will hit. 1 miss, 4 hits for the first photon\_t and 3*5 hits for the remaining three gives a cache miss rate of $\underline{1/20=0.05}$
+\subsubsection*{ii}
+Two photon\_t fit into one block. This results in a MHMHMH pattern (when looking just at the number of photon\_t). Couting the writes this gives a cache miss rate of $\underline{1/10=0.1}$
 \end{document}
