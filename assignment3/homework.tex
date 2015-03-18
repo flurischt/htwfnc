@@ -103,4 +103,8 @@ Because the src / dest never uses the same block at the same time we always get 
 0x00 (src) points to set number 0. 0x6000 (dest) points to set number 512.
 So when src reads the cache block $b=(i \mod 1024)$ dest uses block $b=(i+512 \mod 1024)$. This always gives a MHHH access pattern for read and write. In total thats a cache miss rate of $\underline{1/4=0.25}$
 
+\subsection*{(b)}
+\subsubsection*{i}
+for each column 64 blocks for dest and 64 blocks for src have to be loaded. starting at i=0, j=0 src would use the cache blocks 0:16:1008 (matlab notation, 16 as the stepsize) and dest would use the cache blocks 15:16:1023. after loading the block they can be used for the following three columns leading to a MHHH pattern for four columns. this also gives us a cache miss rate of $\underline{1/4=0.25}$
+
 \end{document}
