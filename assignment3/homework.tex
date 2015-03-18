@@ -36,7 +36,7 @@ The block size is $64$ bytes and with $64=2^6$ 6 bits are needed to determine th
 Also 6 bits are needed for the set. \\
 \underline{This results in a tag length of $64 - 6 - 6=52$ bits.}
 \\
-\textbf{TODO:} effectly used on this machine??
+\textbf{TODO:} effectively used on this machine??
 
 \subsection*{(c)}
 $0xDE147BA$ results ins the following values: \\
@@ -134,5 +134,27 @@ Two photon\_t fit into one block. This results in a MHMHMH pattern (when looking
 \subsubsection*{i}
 every write to irr[0] misses. since the whole cache is overwritten every four rows there's no hit for the the next column. There's a cache miss rate of $\underline{1/5=0.2}$.
 \subsubsection*{ii}
-The cache miss rate is $\underline{1/5=0.2}$. Because the array is processed columnwise for each photon\_t a block must be read. Associativity doesn't help because every four rows all four block of the set have been overwritten.
+The cache miss rate is $\underline{1/5=0.2}$. Because the array is processed columnwise for each photon\_t a block must be read. Associativity doesn't help because every four rows all four blocks of the set have been overwritten.
+
+\section*{Exercise 4 - Roofline}
+$\pi = 3$ flops/cycle and $\beta = 28*1024^3/(3.5*1000^3) = \textbf{8.5}$ \textbf{bytes/cycle ???}
+\subsection*{(a) / (b)}
+insert plot here
+\subsection*{(c)}
+No, it's not possible. We can only execute two multiplications and one addition per cycle. For matrices with size $N \times N$ there are $3*N^3$ multiplications and $N^3$ additions. Assuming we can execute the two muls and one add for $N^3$ cycles there are still $N^3$ muls that need to be executed. Those can be executed in $\frac{N^3}{2}$ cycles leading to a new peak performance of $\pi_c= \frac{3N^3 + N^3}{N^3 + \frac{N^3}{2}}=\frac{4}{\frac{3}{2}}=\underline{\frac{8}{3}}$ flops/cycle.
+
+\subsection*{(d)}
+Aussuming N is sufficiently small such that the working set fits into cache the peak performance can be reached. There are 2 multiplications and one addition which is exactly what our cpu can execute per cycle.
+\textbf{TODO: what about linear dependency? For the first elements we cannot execute 2muls and 1 add because we have to wait for the muls to finish...}
+
+\subsection*{(e)}
+\textbf{TODO}
+
+\section*{Exercise 5 - Roofline and MMM}
+\subsection*{(a)}
+$I(n)=\frac{W(n)}{Q(n)}$ \\
+$T_{comp} = \frac{W(n)}{\pi}$ \\
+$T_{mem} = \frac{Q(n)}{\beta}$ \\
+\textbf{TODO}
+\subsection*{(b)}
 \end{document}
