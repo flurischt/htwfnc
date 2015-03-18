@@ -107,4 +107,20 @@ So when src reads the cache block $b=(i \mod 1024)$ dest uses block $b=(i+512 \m
 \subsubsection*{i}
 for each column 64 blocks for dest and 64 blocks for src have to be loaded. starting at i=0, j=0 src would use the cache blocks 0:16:1008 (matlab notation, 16 as the stepsize) and dest would use the cache blocks 15:16:1023. after loading the block they can be used for the following three columns leading to a MHHH pattern for four columns. this also gives us a cache miss rate of $\underline{1/4=0.25}$
 
+\subsubsection*{ii}
+using the same notation as in i) while processing the first column the first 64 rows would be loaded into the blocks 0:16:1008 (for src). Since we have now 96 rows the next 32 will be loaded into the blocks 0:16:496. This overwrites the first 32 blocks that we have loaded before.   This means, that the first and last 32 rows would always overwrite each others block. The blocks loaded for the rows 32 to 63 can be reused for the 3 columns processed afterwards (as before in i). \\
+The following table shows the hit/miss pattern when 4 columns are processed:\\
+\begin{tabular}{|c|c|c|}
+\hline 
+\rowcolor{gray!30}
+\textbf{rows}  & \textbf{used cache blocks} & \textbf{hit/miss} \\ 
+\hline 
+0 to 31 & 0 to 1008 with a step of 16 & MMMM \\ 
+\hline 
+32 to 63 & 15 to 1023 with a step of 16 & MHHH \\ 
+\hline 
+64 to 95 & 0 to 1008 with a step of 16 & MMMM \\ 
+\hline 
+\end{tabular}  \\
+This results in a cache miss rate of $\underline{9/12=0.75}$
 \end{document}
