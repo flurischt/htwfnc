@@ -22,7 +22,7 @@
 \titlespacing{\subsection}{0pt}{40pt}{8pt}
 
 \author{Flurin Rindisbacher}
-\title{How To Write Fast Numerical Code \\ \vspace{6 mm} \textbf{Assignment X}}
+\title{How To Write Fast Numerical Code \\ \vspace{6 mm} \textbf{Assignment 3}}
 
 \begin{document}
 \maketitle
@@ -35,6 +35,7 @@ There are $32KB / 64 Byte = 512$ cache blocks. The number of sets is therefore $
 The block size is $64$ bytes and with $64=2^6$ 6 bits are needed to determine the position in the block. \\
 Also 6 bits are needed for the set. \\
 \underline{This results in a tag length of $64 - 6 - 6=52$ bits.}
+\\
 \textbf{TODO:} effectly used on this machine??
 
 \subsection*{(c)}
@@ -42,4 +43,61 @@ $0xDE147BA$ results ins the following values: \\
 tag: $0xDE14$ \\
 set: $0x1E$ \\
 block: $0x3A$
+
+\section*{Exercise 2 - Cache mechanics}
+cache size: 32KB \\
+block size: 64 bytes \\
+number of sets: 32KB / 16bytes = 1024 sets \\
+because of sizeof(int) = 4, 4 integers fit into one block. \\
+address of src matrix: 0x00 \\
+address of dest matrix assuming size 64x64: 0x4000 ($64*64*4=16384$) \\
+address of dest matrix assuming size 96x64 = 0x6000 ($96*64*4=25576$) \\
+Number of bits for block: 4 \\
+Number of bits for set: 10\\
+\subsection*{(a)}
+\subsubsection*{(i)}
+with 4 integers per block and 64 ints per row there are 16 blocks to read/write per row. 0x00 (src) and 0x4000 (dest) map to the same cache set. we therefore know, that they'll use the same blocks for the dest[i] and src[i] row.  \\ Assuming the used blocks are numbered from 0 to 15 the access pattern will be the following: \\
+
+\begin{tabular}{|c|c|c|c|}
+\hline 
+block for src & block fro dest & hit/miss src & hit/miss dest \\ 
+\hline 
+0 & 15 & MHHH & MHHH \\ 
+\hline 
+1 & 14 & MHHH & MHHH \\ 
+\hline 
+2 & 13 & MHHH & MHHH \\ 
+\hline 
+3 & 12 & MHHH & MHHH \\ 
+\hline 
+4 & 11 & MHHH & MHHH \\ 
+\hline 
+5 & 10 & MHHH & MHHH \\ 
+\hline 
+6 & 9 & MHHH & MHHH \\ 
+\hline 
+7 & 8 & MHHH & MHHH \\ 
+\hline 
+8 & 7 & HHHH & HHHH \\ 
+\hline 
+9 & 6 & HHHH & HHHH \\ 
+\hline 
+10 & 5 & HHHH & HHHH \\ 
+\hline 
+11 & 4 & HHHH & HHHH \\ 
+\hline 
+12 & 3 & HHHH & HHHH \\ 
+\hline 
+13 & 2 & HHHH & HHHH \\ 
+\hline 
+14 & 1 & HHHH & HHHH \\ 
+\hline 
+15 & 0 & HHHH & HHHH \\ 
+\hline 
+\end{tabular} 
+
+We see that for the first 8 lines we have a MHHH miss/hit pattern for both src and dest. Then in the last 8 lines we just have hits because all blocks have ben read to the cache. \\
+For each row we therefore have 16 misses and $64+48=112$ hits. \\ 
+This gives a cache miss rate of $\underline{16/128=0.125}$
+
 \end{document}
