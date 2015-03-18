@@ -55,12 +55,13 @@ address of dest matrix assuming size 96x64 = 0x6000 ($96*64*4=25576$) \\
 Number of bits for block: 4 \\
 Number of bits for set: 10\\
 \subsection*{(a)}
-\subsubsection*{(i)}
-with 4 integers per block and 64 ints per row there are 16 blocks to read/write per row. 0x00 (src) and 0x4000 (dest) map to the same cache set. we therefore know, that they'll use the same blocks for the dest[i] and src[i] row.  \\ Assuming the used blocks are numbered from 0 to 15 the access pattern will be the following: \\
+\subsubsection*{i}
+with 4 integers per block and 64 ints per row there are 16 blocks to read/write per row. 0x00 (src) and 0x4000 (dest) map to the same cache set. we therefore know, that they'll use the same 16 blocks for the dest[i] and src[i] row.  \\ Assuming the used blocks are numbered from 0 to 15 the access pattern will be the following: \\
 
 \begin{tabular}{|c|c|c|c|}
 \hline 
-block for src & block fro dest & hit/miss src & hit/miss dest \\ 
+\rowcolor{gray!30}
+\textbf{block for src} &\textbf{ block for dest} & \textbf{hit/miss src} & \textbf{hit/miss dest} \\ 
 \hline 
 0 & 15 & MHHH & MHHH \\ 
 \hline 
@@ -78,26 +79,28 @@ block for src & block fro dest & hit/miss src & hit/miss dest \\
 \hline 
 7 & 8 & MHHH & MHHH \\ 
 \hline 
-8 & 7 & HHHH & HHHH \\ 
+8 & 7 & MHHH & MHHH \\ 
 \hline 
-9 & 6 & HHHH & HHHH \\ 
+9 & 6 & MHHH & MHHH \\ 
 \hline 
-10 & 5 & HHHH & HHHH \\ 
+10 & 5 & MHHH & MHHH \\ 
 \hline 
-11 & 4 & HHHH & HHHH \\ 
+11 & 4 & MHHH & MHHH \\ 
 \hline 
-12 & 3 & HHHH & HHHH \\ 
+12 & 3 & MHHH & MHHH \\ 
 \hline 
-13 & 2 & HHHH & HHHH \\ 
+13 & 2 & MHHH & MHHH \\ 
 \hline 
-14 & 1 & HHHH & HHHH \\ 
+14 & 1 & MHHH & MHHH \\ 
 \hline 
-15 & 0 & HHHH & HHHH \\ 
+15 & 0 & MHHH & MHHH \\ 
 \hline 
 \end{tabular} 
 
-We see that for the first 8 lines we have a MHHH miss/hit pattern for both src and dest. Then in the last 8 lines we just have hits because all blocks have ben read to the cache. \\
-For each row we therefore have 16 misses and $64+48=112$ hits. \\ 
-This gives a cache miss rate of $\underline{16/128=0.125}$
+Because the src / dest never uses the same block at the same time we always get an access pattern of MHHH. This results in a cache miss rate of $\underline{1/4=0.25}$
+
+\subsubsection*{ii}
+0x00 (src) points to set number 0. 0x6000 (dest) points to set number 512.
+So when src reads the cache block $b=(i \mod 1024)$ dest uses block $b=(i+512 \mod 1024)$. This always gives a MHHH access pattern for read and write. In total thats a cache miss rate of $\underline{1/4=0.25}$
 
 \end{document}
