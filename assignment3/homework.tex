@@ -157,7 +157,7 @@ No, it's not possible. We can only execute two multiplications and one addition 
 \end{landscape}
 
 \subsection*{(d)}
-Aussuming N is sufficiently small such that the working set fits into cache the peak performance can be reached. There are two multiplications and one addition which is exactly what our cpu can execute per cycle.
+Aussuming N is sufficiently small such that the working set fits into cache ($3*N^3*4B<=8MB$) the peak performance can be reached. There are two multiplications and one addition which is exactly what our cpu can execute per cycle.
 It should be noted that the first and last addition cannot be executed simultaneously to the other two multiplications because they depend on their result. But since it's just two operations out of the $3*N^3$ operations I'd say that peak performance can be reached.
 
 \subsection*{(e)}
@@ -165,9 +165,18 @@ It should be noted that the first and last addition cannot be executed simultane
 
 \section*{Exercise 5 - Roofline and MMM}
 \subsection*{(a)}
+By definition we have: 
 $I(n)=\frac{W(n)}{Q(n)}$ \\
-$T_{comp} = \frac{W(n)}{\pi}$ \\
-$T_{mem} = \frac{Q(n)}{\beta}$ \\
-\textbf{TODO}
+Since the dot of the function lies on the ridge point we also know that
+$T_{comp} = \frac{W(n)}{\pi}$  and
+$T_{mem} = \frac{Q(n)}{\beta}$. \\
+As seen in exercise four the ridge point lies on $x=\pi/\beta$ and $y=\pi$ and therefore $I(n)=\pi/\beta$ (x-Axis). \\
+Starting at the definition of \\
+$I(n)=\frac{W(n)}{Q(n)} \\
+ \implies \frac{W(n)}{Q(n)} = \pi/\beta \\
+  \implies \frac{W(n)}{\pi} = \frac{Q(n)}{\beta}\\
+  \implies T_{comp} = T_{mem}$ what concludes the proof.
+
+The reverse can also be shown by applying the above steps backwards. The reverse only holds under the assumption that $\pi, \beta$ and $Q(n)$ are not 0!
 \subsection*{(b)}
 \end{document}
