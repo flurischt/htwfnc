@@ -139,7 +139,8 @@ every write to irr[0] misses. since the whole cache is overwritten every four ro
 The cache miss rate is $\underline{1/5=0.2}$. Because the array is processed columnwise for each photon\_t a block must be read. Associativity doesn't help because every four rows all four blocks of the set have been overwritten.
 
 \section*{Exercise 4 - Roofline}
-$\pi = 3$ flops/cycle and $\beta = 28*1024^3/(3.5*1000^3) = \textbf{8.5}$ \textbf{bytes/cycle ???}
+$\pi = 3$ flops/cycle and \\
+$\beta = 28/3.5 =8$ bytes/cycle (assuming that Gbyte means $1000^3$ and not $1024^3$ bytes)
 \subsection*{(a) / (b)}
 
 See Figure \ref{roofline_plot} below.
@@ -156,8 +157,8 @@ No, it's not possible. We can only execute two multiplications and one addition 
 \end{landscape}
 
 \subsection*{(d)}
-Aussuming N is sufficiently small such that the working set fits into cache the peak performance can be reached. There are 2 multiplications and one addition which is exactly what our cpu can execute per cycle.
-\textbf{TODO: what about linear dependency? For the first elements we cannot execute 2muls and 1 add because we have to wait for the muls to finish...}
+Aussuming N is sufficiently small such that the working set fits into cache the peak performance can be reached. There are two multiplications and one addition which is exactly what our cpu can execute per cycle.
+It should be noted that the first and last addition cannot be executed simultaneously to the other two multiplications because they depend on their result. But since it's just two operations out of the $3*N^3$ operations I'd say that peak performance can be reached.
 
 \subsection*{(e)}
 \textbf{TODO}
