@@ -37,8 +37,7 @@ There are $32KB / 64 Byte = 512$ cache blocks. The number of sets is therefore $
 The block size is $64$ bytes and with $64=2^6$ 6 bits are needed to determine the position in the block. \\
 Also 6 bits are needed for the set. \\
 \underline{This results in a tag length of $64 - 6 - 6=52$ bits.}
-\\
-\textbf{TODO:} effectively used on this machine??
+This assumes that the whole 64bit address space can be used. Some systems use 8 byte alignment which would make the tag 3 bit smaller resulting in a $52-3=49$ bit long tag.
 
 \subsection*{(c)}
 $0xDE147BA$ results ins the following values: \\
@@ -99,7 +98,8 @@ with 4 integers per block and 64 ints per row there are 16 blocks to read/write 
 \hline 
 \end{tabular} 
 
-Because the src / dest never uses the same block at the same time we always get an access pattern of MHHH. This results in a cache miss rate of $\underline{1/4=0.25}$
+Because the src / dest never uses the same block at the same time we always get an access pattern of MHHH. This results in a cache miss rate of $\underline{1/4=0.25}$\\
+(Before creating the table I thought that it would show a more interesting pattern... Just leaving the table for completeness.)
 
 \subsubsection*{ii}
 0x00 (src) points to set number 0. 0x6000 (dest) points to set number 512.
@@ -177,6 +177,6 @@ $I(n)=\frac{W(n)}{Q(n)} \\
   \implies \frac{W(n)}{\pi} = \frac{Q(n)}{\beta}\\
   \implies T_{comp} = T_{mem}$ what concludes the proof.
 
-The reverse can also be shown by applying the above steps backwards. The reverse only holds under the assumption that $\pi, \beta$ and $Q(n)$ are not 0!
+The reverse can also be shown by applying the above steps backwards. The reverse only holds under the assumption that $\pi, \beta$ and $Q(n)$ are $!=0$.
 \subsection*{(b)}
 \end{document}
