@@ -161,7 +161,18 @@ Aussuming N is sufficiently small such that the working set fits into cache ($3*
 It should be noted that the first and last addition cannot be executed simultaneously to the other two multiplications because they depend on their result. But since it's just two operations out of the $3*N^3$ operations I'd say that peak performance can be reached.
 
 \subsection*{(e)}
-\textbf{TODO}
+Yes, it's possible for compute3(A,B,C,65536) to reach peak performance. 
+Som observations/assumptions:
+\begin{itemize}
+\item 16 floats fit into one cache block
+\item loading one matrix column takes $16*4*65536=4MiB$
+\item I assume that the ith column of A and the jth column of B are loaded to cache (and stay there).
+\end{itemize}
+The matrix \underline{A has to be loaded once}. The outer loop fixes the column and then it can be reused (since it's in cache) for the inner two loops.\\ The matrix \underline{B has to be loaded N times}. 4Mib of the cache are used for the column of A. Since the column of B is set by the second loop it must therefore be read N times. \\
+\underline{Each element of C has to be read only once}. Under the assumption that the ith column of A and the jth column of B is in cache, we know that the cache is full. This means that \underline{for each element of C a whole cache block must be read}. Assuming that the block is invalidated afterwards and we have to fill this block again with data for the columns of A or B we have to read $2*64*N^2$ bytes to read the elements of C and 'restore' the block with the value from A or B.
+
+This function has $W(n)=3*N^3$ and using the assumptions above\\ $Q(n)=4*N^2+4*N^3+2*64*N^2$ (A + N times B + C including overhead and restore) With $N=65536$ this gives an operational intensity of $\underline{I(n)=\frac{3*65536^3}{4*65536^2+4*65536^3+2*64*65536^2}=0.75}$
+This is above the ridge point at $3/8=0.375$ and therefore compute bound. From exercise (d) we know that peak performance can therefore be reached.
 
 \section*{Exercise 5 - Roofline and MMM}
 \subsection*{(a)}
