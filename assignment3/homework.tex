@@ -13,6 +13,8 @@
 \usepackage{float}
 \graphicspath{ {plots/} }
 \usepackage{pdflscape}
+\usepackage{mathtools}
+\DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
 
 % kein einrücken bei neuen absätzen
 \setlength{\parindent}{0pt}
@@ -169,10 +171,10 @@ Som observations/assumptions:
 \item I assume that the ith column of A and the jth column of B are loaded to cache (and stay there).
 \end{itemize}
 The matrix \underline{A has to be loaded once}. The outer loop fixes the column and then it can be reused (since it's in cache) for the inner two loops.\\ The matrix \underline{B has to be loaded N times}. 4Mib of the cache are used for the column of A. Since the column of B is set by the second loop it must therefore be read N times. \\
-\underline{Each element of C has to be read only once}. Under the assumption that the ith column of A and the jth column of B is in cache, we know that the cache is full. This means that \underline{for each element of C a whole cache block must be read}. Assuming that the block is invalidated afterwards and we have to fill this block again with data for the columns of A or B we have to read $2*64*N^2$ bytes to read the elements of C and 'restore' the block with the value from A or B.
+\underline{Each element of C has to be read only once}. Under the assumption that the ith column of A and the jth column of B is in cache, we know that the cache is full. This means that\\ \underline{for each element of C a whole cache block must be read}. Assuming that the block is invalidated afterwards and we have to fill this block again with data for the columns of A or B we have to read $2*64*N^2$ bytes to read the elements of C and 'restore' the block with the value from A or B.
 
 This function has $W(n)=3*N^3$ and using the assumptions above\\ $Q(n)=4*N^2+4*N^3+2*64*N^2$ (A + N times B + C including overhead and restore) With $N=65536$ this gives an operational intensity of $\underline{I(n)=\frac{3*65536^3}{4*65536^2+4*65536^3+2*64*65536^2}=0.75}$
-This is above the ridge point at $3/8=0.375$ and therefore compute bound. From exercise (d) we know that peak performance can therefore be reached.
+This is on the right side of the ridge point at $x=3/8=0.375$ and therefore compute bound. From exercise (d) we know that peak performance can therefore be reached.
 
 \section*{Exercise 5 - Roofline and MMM}
 \subsection*{(a)}
@@ -190,4 +192,21 @@ $I(n)=\frac{W(n)}{Q(n)} \\
 
 The reverse can also be shown by applying the above steps backwards. The reverse only holds under the assumption that $\pi, \beta$ and $Q(n)$ are $!=0$.
 \subsection*{(b)}
+\begin{itemize}
+\item $W(N) = 2*N^3$
+\item minimal number of cache misses $\implies$ matrices are multiplied by blocks using an \underline{optimal} blocksize $N_B$ 
+\item dots lie on the ridge point $\implies I(n) = \pi/\beta$ 
+\item from the lecture notes we know that for MMM the optimal achievable operational intensity lies in $\theta(sqrt(N))$
+\item on the new cpu we have an operational intensity of $\frac{\pi'}{\beta}=\frac{\alpha*\pi}{\beta}$ (when the dots lie on the ridge point)
+\end{itemize}
+In the lecture we modelled the optimal block size using the formula $\ceil{\frac{N_B^2}{B_1}} + 3*\ceil{\frac{N_B}{B_1}} + 1 <= \frac{\gamma}{B_1}$ with $B_1$ being the cache block size. When multipliying by blocks for each block-multiplication we have to load three bocks (from matrix A, B and from the resulting matrix). This means $3*N^3$ elements are loaded per block-multiplication. There are $(N/N_B)^2$ blocks in a matrix and for each of those blocks we have $N/N_B$ block multiplications result in $(N/N_B)^3$ block-multiplications.\\
+$Q(n)={3*N^3 * (N/N_B)^3}=\frac{3*N^3}{N_B}$ \\ (elements per multiplication times number of block-multiplications) \\
+Using this new $Q(n)$ and $W(n)$ from above the operational intensity becomes: \\ $I(n)=\frac{W(n)}{Q(n)}=\frac{2*N^3}{\frac{3*N^3}{N_B}} = \frac{2*N^3*N_B}{3*N^3} =\frac{\pi}{\beta}$
+knowing that the cpu has peak performance $\pi'=\alpha*\pi$ and that we want the dot to lie on the ridge point again we must have a computational intensity of $I(n)=\frac{\pi'}{\beta} = \frac{\alpha*\pi}{\beta}$. This can be achieved by using a new matrix-blocksize of $N_B'=N_B*\alpha$. \\
+The new blocksize still needs to satisfy the inequality from the lecture. \\
+$\ceil{\frac{N_B'^2}{B_1}} + 3*\ceil{\frac{N_B'}{B_1}} + 1 <= \frac{\gamma*\lambda}{B_1}$ \\
+where $\lambda$ is a newly introduced factor by which the cache size has to increase. \\
+Replacing $N_B'$ with $N_B*\alpha$ leads to
+$\ceil{\frac{N_B^2\alpha^2}{B_1}} + 3*\ceil{\frac{N_B*\alpha}{B_1}} + 1 <= \frac{\gamma*\lambda}{B_1}$ \\
+So the factor $\lambda$ needs to be at least $\lambda>\alpha^2$ for the inequality to hold. The cache size must be increased by a factor of $O(\alpha^2)$.
 \end{document}
