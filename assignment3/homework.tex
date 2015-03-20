@@ -209,7 +209,8 @@ $\ceil{\frac{N_B'^2}{B_1}} + 3*\ceil{\frac{N_B'}{B_1}} + 1 <= \frac{\gamma*\lamb
 where $\lambda$ is a new introduced factor by which the cache size has to increase. \\
 Replacing $N_B'$ with $N_B*\alpha$ leads to
 $\ceil{\frac{N_B^2\alpha^2}{B_1}} + 3*\ceil{\frac{N_B*\alpha}{B_1}} + 1 <= \frac{\gamma*\lambda}{B_1}$ \\
-So the factor $\lambda$ needs to be at least $\lambda>\alpha^2$ for the inequality to hold. The cache size must be increased by a factor of $\Omega(\alpha^2)$.
+The LHS of the inequality grows by $\frac{((\alpha^2-1)*N_B^2)}{B_1}+3*\frac{(\alpha-1)*N_B}{B_1}$ due to the added $\alpha$.
+Chosing $\lambda=\alpha^2$ makes the inequality to hold. The cache size should therefore be increased by a factor of $O(\alpha^2)$.
 \newpage
 \section*{References}
 \begin{itemize}
