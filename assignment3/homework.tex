@@ -59,7 +59,7 @@ Number of bits for block: 4 \\
 Number of bits for set: 10\\
 \subsection*{(a)}
 \subsubsection*{i}
-with 4 integers per block and 64 ints per row there are 16 blocks to read/write per row. 0x00 (src) and 0x4000 (dest) map to the same cache set. we therefore know, that they'll use the same 16 blocks for the dest[i] and src[i] row.  \\ Assuming the used blocks are numbered from 0 to 15 the access pattern will be the following: \\
+With 4 integers per block and 64 ints per row there are 16 blocks to read/write per row. 0x00 (src) and 0x4000 (dest) map to the same cache set. We therefore know, that they'll use the same 16 blocks for the dest[i] and src[i] row.  \\ Assuming the used blocks are numbered from 0 to 15 the access pattern will be the following: \\
 
 \begin{tabular}{|c|c|c|c|}
 \hline 
@@ -109,10 +109,10 @@ So when src reads the cache block $b=(i \mod 1024)$ dest uses block $b=(i+512 \m
 
 \subsection*{(b)}
 \subsubsection*{i}
-for each column 64 blocks for dest and 64 blocks for src have to be loaded. starting at i=0, j=0 src would use the cache blocks 0:16:1008 (matlab notation, 16 as the stepsize) and dest would use the cache blocks 15:16:1023. after loading the block they can be used for the following three columns leading to a MHHH pattern for four columns. this also gives us a cache miss rate of $\underline{1/4=0.25}$
+For each column 64 blocks for dest and 64 blocks for src have to be loaded. starting at i=0, j=0 src would use the cache blocks 0:16:1008 (matlab notation, 16 as the stepsize) and dest would use the cache blocks 15:16:1023. After loading the block they can be used for the following three columns leading to a MHHH pattern for four columns. This also gives us a cache miss rate of $\underline{1/4=0.25}$
 
 \subsubsection*{ii}
-using the same notation as in i) while processing the first column the first 64 rows would be loaded into the blocks 0:16:1008 (for src). Since we have now 96 rows the next 32 will be loaded into the blocks 0:16:496. This overwrites the first 32 blocks that we have loaded before.   This means, that the first and last 32 rows would always overwrite each others block. The blocks loaded for the rows 32 to 63 can be reused for the 3 columns processed afterwards (as before in i). \\
+Using the same notation as in i) while processing the first column the first 64 rows would be loaded into the blocks 0:16:1008 (for src). Since we have now 96 rows the next 32 will be loaded into the blocks 0:16:496. This overwrites the first 32 blocks that we have loaded before.   This means, that the first and last 32 rows would always overwrite each others blocks. The blocks loaded for the rows 32 to 63 can be reused for the 3 columns processed afterwards (as before in i). The same statement holds for the dest array.\\
 The following table shows the hit/miss pattern when 4 columns are processed:\\
 \begin{tabular}{|c|c|c|}
 \hline 
@@ -131,14 +131,14 @@ This results in a cache miss rate of $\underline{9/12=0.75}$
 \section*{Exercise 3 - Cache mechanics}
 \subsection*{(a)}
 \subsubsection*{i}
-Four photon\_t fit into one cache block. For four consecutive photon\_t the write to the first irr[0] will miss. Writes to the remaining irr[1], irr[2], theta, phi and all writes for the remaining three photon\_t will hit. 1 miss, 4 hits for the first photon\_t and 3*5 hits for the remaining three gives a cache miss rate of $\underline{1/20=0.05}$
+Four photon\_t fit into one cache block. For four consecutive photon\_t the write to the first irr[0] will miss. Writes to the remaining irr[1], irr[2], theta, phi and all writes to the remaining three photon\_t will hit. 1 miss, 4 hits for the first photon\_t and 3*5 hits for the remaining three gives a cache miss rate of $\underline{1/20=0.05}$
 \subsubsection*{ii}
-Two photon\_t fit into one block. This results in a MHMHMH pattern (when looking just at the number of photon\_t). Couting the writes this gives a cache miss rate of $\underline{1/10=0.1}$
+Now two photon\_t fit into one block. This results in a MHMHMH pattern (when looking just at the number of photon\_t). Couting the writes this gives a cache miss rate of $\underline{1/10=0.1}$
 \subsection*{(b)}
 \subsubsection*{i}
-every write to irr[0] misses. since the whole cache is overwritten every four rows there's no hit for the the next column. There's a cache miss rate of $\underline{1/5=0.2}$.
+Every write to irr[0] misses. since the whole cache is overwritten every four rows there's no hit for the the next column. There's a cache miss rate of $\underline{1/5=0.2}$.
 \subsubsection*{ii}
-The cache miss rate is $\underline{1/5=0.2}$. Because the array is processed columnwise for each photon\_t a block must be read. Associativity doesn't help because every four rows all four blocks of the set have been overwritten.
+The cache miss rate is $\underline{1/5=0.2}$. Because the array is processed columnwise for each photon\_t a whole block must be read. Associativity doesn't help because every four rows all four blocks of the set have been overwritten.
 
 \section*{Exercise 4 - Roofline}
 $\pi = 3$ flops/cycle and \\
@@ -170,7 +170,7 @@ Som observations/assumptions:
 \item loading one matrix column takes $16*4*65536=4MiB$
 \item I assume that the ith column of A and the jth column of B are loaded to cache (and stay there).
 \end{itemize}
-The matrix \underline{A has to be loaded once}. The outer loop fixes the column and then it can be reused (since it's in cache) for the inner two loops.\\ The matrix \underline{B has to be loaded N times}. 4Mib of the cache are used for the column of A. Since the column of B is set by the second loop it must therefore be read N times. \\
+The matrix \underline{A has to be loaded once}. The outer loop fixes the column and then it can be reused (since it's in cache) in the inner two loops.\\ The matrix \underline{B has to be loaded N times}. 4Mib of the cache are already used for the column of A. Since the column of B is set by the second loop it must therefore be read N times. \\
 \underline{Each element of C has to be read only once}. Under the assumption that the ith column of A and the jth column of B is in cache, we know that the cache is full. This means that\\ \underline{for each element of C a whole cache block must be read}. Assuming that the block is invalidated afterwards and we have to fill this block again with data for the columns of A or B we have to read $2*64*N^2$ bytes to read the elements of C and 'restore' the block with the value from A or B.
 
 This function has $W(n)=3*N^3$ and using the assumptions above\\ $Q(n)=4*N^2+4*N^3+2*64*N^2$ (A + N times B + C including overhead and restore) With $N=65536$ this gives an operational intensity of $\underline{I(n)=\frac{3*65536^3}{4*65536^2+4*65536^3+2*64*65536^2}=0.75}$
@@ -184,7 +184,7 @@ Since the dot of the function lies on the ridge point we also know that
 $T_{comp} = \frac{W(n)}{\pi}$  and
 $T_{mem} = \frac{Q(n)}{\beta}$. \\
 As seen in exercise four the ridge point lies on $x=\pi/\beta$ and $y=\pi$ and therefore $I(n)=\pi/\beta$ (x-Axis). \\
-Starting at the definition of \\
+Starting with the definition of \\
 $I(n)=\frac{W(n)}{Q(n)} \\
  \implies \frac{W(n)}{Q(n)} = \pi/\beta \\
   \implies \frac{W(n)}{\pi} = \frac{Q(n)}{\beta}\\
@@ -194,18 +194,18 @@ The reverse can also be shown by applying the above steps backwards. The reverse
 \subsection*{(b)}
 \begin{itemize}
 \item $W(N) = 2*N^3$
-\item minimal number of cache misses $\implies$ matrices are multiplied by blocks using an \underline{optimal} blocksize $N_B$ 
-\item dots lie on the ridge point $\implies I(n) = \pi/\beta$ 
-\item from the lecture notes we know that for MMM the optimal achievable operational intensity lies in $\theta(sqrt(N))$
-\item on the new cpu we have an operational intensity of $\frac{\pi'}{\beta}=\frac{\alpha*\pi}{\beta}$ (when the dots lie on the ridge point)
+\item Minimal number of cache misses $\implies$ matrices are multiplied by blocks using an \underline{optimal} blocksize $N_B$ 
+\item Dots lie on the ridge point $\implies I(n) = \pi/\beta$ 
+\item From the lecture notes we know that for MMM the optimal achievable operational intensity lies in $\theta(sqrt(N))$
+\item On the new cpu we have an operational intensity of $\frac{\pi'}{\beta}=\frac{\alpha*\pi}{\beta}$ (when the dots lie on the ridge point)
 \end{itemize}
-In the lecture we modelled the optimal block size using the formula $\ceil{\frac{N_B^2}{B_1}} + 3*\ceil{\frac{N_B}{B_1}} + 1 <= \frac{\gamma}{B_1}$ with $B_1$ being the cache block size. When multipliying by blocks for each block-multiplication we have to load three bocks (from matrix A, B and from the resulting matrix). This means $3*N^3$ elements are loaded per block-multiplication. There are $(N/N_B)^2$ blocks in a matrix and for each of those blocks we have $N/N_B$ block multiplications result in $(N/N_B)^3$ block-multiplications.\\
+In the lecture we modelled the optimal block size using the formula $\ceil{\frac{N_B^2}{B_1}} + 3*\ceil{\frac{N_B}{B_1}} + 1 <= \frac{\gamma}{B_1}$ with $B_1$ being the cache block size. When multipliying by blocks for each block-multiplication we have to load three bocks (from matrix A, B and from the resulting matrix). This means $3*N^3$ elements are loaded per block-multiplication. There are $(N/N_B)^2$ blocks in a matrix and for each of those blocks we have $N/N_B$ block-multiplications resulting in $(N/N_B)^3$ block-multiplications.\\
 $Q(n)={3*N^3 * (N/N_B)^3}=\frac{3*N^3}{N_B}$ \\ (elements per multiplication times number of block-multiplications) \\
 Using this new $Q(n)$ and $W(n)$ from above the operational intensity becomes: \\ $I(n)=\frac{W(n)}{Q(n)}=\frac{2*N^3}{\frac{3*N^3}{N_B}} = \frac{2*N^3*N_B}{3*N^3} =\frac{\pi}{\beta}$
-knowing that the cpu has peak performance $\pi'=\alpha*\pi$ and that we want the dot to lie on the ridge point again we must have a computational intensity of $I(n)=\frac{\pi'}{\beta} = \frac{\alpha*\pi}{\beta}$. This can be achieved by using a new matrix-blocksize of $N_B'=N_B*\alpha$. \\
+Knowing that the cpu has peak performance $\pi'=\alpha*\pi$ and that we want the dot to lie on the ridge point again we must have a computational intensity of $I(n)=\frac{\pi'}{\beta} = \frac{\alpha*\pi}{\beta}$. This can be achieved by using a new matrix-blocksize of $N_B'=N_B*\alpha$. \\
 The new blocksize still needs to satisfy the inequality from the lecture. \\
 $\ceil{\frac{N_B'^2}{B_1}} + 3*\ceil{\frac{N_B'}{B_1}} + 1 <= \frac{\gamma*\lambda}{B_1}$ \\
-where $\lambda$ is a newly introduced factor by which the cache size has to increase. \\
+where $\lambda$ is a new introduced factor by which the cache size has to increase. \\
 Replacing $N_B'$ with $N_B*\alpha$ leads to
 $\ceil{\frac{N_B^2\alpha^2}{B_1}} + 3*\ceil{\frac{N_B*\alpha}{B_1}} + 1 <= \frac{\gamma*\lambda}{B_1}$ \\
 So the factor $\lambda$ needs to be at least $\lambda>\alpha^2$ for the inequality to hold. The cache size must be increased by a factor of $O(\alpha^2)$.
