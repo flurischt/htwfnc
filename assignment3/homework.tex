@@ -14,6 +14,7 @@
 \graphicspath{ {plots/} }
 \usepackage{pdflscape}
 \usepackage{mathtools}
+
 \DeclarePairedDelimiter{\ceil}{\lceil}{\rceil}
 
 % kein einrücken bei neuen absätzen
@@ -109,7 +110,7 @@ So when src reads the cache block $b=(i \mod 1024)$ dest uses block $b=(i+512 \m
 
 \subsection*{(b)}
 \subsubsection*{i}
-For each column 64 blocks for dest and 64 blocks for src have to be loaded. starting at i=0, j=0 src would use the cache blocks 0:16:1008 (matlab notation, 16 as the stepsize) and dest would use the cache blocks 15:16:1023. After loading the block they can be used for the following three columns leading to a MHHH pattern for four columns. This also gives us a cache miss rate of $\underline{1/4=0.25}$
+For each column 64 blocks for dest and 64 blocks for src have to be loaded. Starting at i=0, j=0 src would use the cache blocks 0:16:1008 (matlab notation, 16 as the stepsize) and dest would use the cache blocks 15:16:1023. After loading the block they can be used for the following three columns leading to a MHHH pattern for four columns. This also gives us a cache miss rate of $\underline{1/4=0.25}$
 
 \subsubsection*{ii}
 Using the same notation as in i) while processing the first column the first 64 rows would be loaded into the blocks 0:16:1008 (for src). Since we have now 96 rows the next 32 will be loaded into the blocks 0:16:496. This overwrites the first 32 blocks that we have loaded before.   This means, that the first and last 32 rows would always overwrite each others blocks. The blocks loaded for the rows 32 to 63 can be reused for the 3 columns processed afterwards (as before in i). The same statement holds for the dest array.\\
@@ -133,10 +134,10 @@ This results in a cache miss rate of $\underline{9/12=0.75}$
 \subsubsection*{i}
 Four photon\_t fit into one cache block. For four consecutive photon\_t the write to the first irr[0] will miss. Writes to the remaining irr[1], irr[2], theta, phi and all writes to the remaining three photon\_t will hit. 1 miss, 4 hits for the first photon\_t and 3*5 hits for the remaining three gives a cache miss rate of $\underline{1/20=0.05}$
 \subsubsection*{ii}
-Now two photon\_t fit into one block. This results in a MHMHMH pattern (when looking just at the number of photon\_t). Couting the writes this gives a cache miss rate of $\underline{1/10=0.1}$
+Now two photon\_t fit into one block. This results in a MHMHMH pattern (when looking just at the number of photon\_t). Counting the writes this gives a cache miss rate of $\underline{1/10=0.1}$
 \subsection*{(b)}
 \subsubsection*{i}
-Every write to irr[0] misses. since the whole cache is overwritten every four rows there's no hit for the the next column. There's a cache miss rate of $\underline{1/5=0.2}$.
+Every write to irr[0] misses. Since the whole cache is overwritten every four rows there's no hit for the the next column. There's a cache miss rate of $\underline{1/5=0.2}$.
 \subsubsection*{ii}
 The cache miss rate is $\underline{1/5=0.2}$. Because the array is processed columnwise for each photon\_t a whole block must be read. Associativity doesn't help because every four rows all four blocks of the set have been overwritten.
 
@@ -164,7 +165,7 @@ It should be noted that the first and last addition cannot be executed simultane
 
 \subsection*{(e)}
 Yes, it's possible for compute3(A,B,C,65536) to reach peak performance. 
-Som observations/assumptions:
+Some observations/assumptions:
 \begin{itemize}
 \item 16 floats fit into one cache block
 \item loading one matrix column takes $16*4*65536=4MiB$
@@ -208,13 +209,13 @@ $\ceil{\frac{N_B'^2}{B_1}} + 3*\ceil{\frac{N_B'}{B_1}} + 1 <= \frac{\gamma*\lamb
 where $\lambda$ is a new introduced factor by which the cache size has to increase. \\
 Replacing $N_B'$ with $N_B*\alpha$ leads to
 $\ceil{\frac{N_B^2\alpha^2}{B_1}} + 3*\ceil{\frac{N_B*\alpha}{B_1}} + 1 <= \frac{\gamma*\lambda}{B_1}$ \\
-So the factor $\lambda$ needs to be at least $\lambda>\alpha^2$ for the inequality to hold. The cache size must be increased by a factor of $O(\alpha^2)$.
+So the factor $\lambda$ needs to be at least $\lambda>\alpha^2$ for the inequality to hold. The cache size must be increased by a factor of $\Omega(\alpha^2)$.
 \newpage
 \section*{References}
 \begin{itemize}
 \item Lecture notes "How To Write Fast Numerical Code" ETHZ 2015
 \item Computer Systems: A Programmer's Perspective, 2nd edition,
 Randal E. Bryant and David R. O'Hallaron, Addison Wesley 2010
-\item Discussions with other students (Exercise 4.b)
+\item Discussions with other students. \\My team-colleagues helped me understand the roofline model (properties holding when a dot is on the ridge point) and they gave me a tip about the number of block-mutliplications. (Exercise 5.b)
 \end{itemize}
 \end{document}
