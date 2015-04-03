@@ -1,0 +1,8 @@
+TOTAL: 86.00 / 100.00
+
+Ex 2) 25 OK
+Ex 3) 30
+-10p: no reduction of if branching
+Ex 4) 16
+(a) 6/10 Missed temporal locality for accesses on A[ind_p][j] and A[k][j] in the loop for swapping
+(b) 10/10

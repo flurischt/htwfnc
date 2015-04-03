@@ -1,0 +1,16 @@
+TOTAL: 85.00 / 100.00
+
+Ex 1) 10 / 12
+(b) Effective bits for cache are related to RAM size. 
+Ex 2) 12 OK
+Ex 3) 20 OK
+Ex 4) 17
+(a) 0.5/0.5
+(b) 0.5/0.5
+(c) 8/8
+(d) 8/8
+(e) 0/8 wrong conclusion + calculation, columns of A are loaded according to k which changes every iteration
+5) 21
+(a) From Tmem=Tcomp follows that the op.int. is in ridge position. To actually place the dot on the ridge we need perfect overlap between Tcomp and Tmem (-5).
+(b) Note: “by a factor O(alpha^2)” is not correct (you would allow nonquadratic factors as well). “A factor alpha^2” is good enough.
+
