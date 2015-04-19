@@ -28,12 +28,21 @@
  */
 
 #include <stdlib.h>
+#include <stdio.h>
 #include "xmmintrin.h"
 #include "comp.h"
 
 void simd_conjugate_transpose (complex_t in[2][2], complex_t out[2][2])
 {
-	// your code goes here ...
+    __m128 row1 = _mm_load_ps((float*)in[0]);
+    __m128 row2 = _mm_load_ps((float*)in[1]);
+    __m128 multiplier = _mm_set_ps(-1.0, 1.0, -1.0, 1.0);
+    row1 = _mm_mul_ps(row1, multiplier);
+    row2 = _mm_mul_ps(row2, multiplier);
+    __m128 conj_row = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(1, 0, 1, 0));
+    _mm_store_ps((float*) out[0], conj_row);
+    conj_row = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(3, 2, 3, 2));
+    _mm_store_ps((float*) out[1], conj_row);
 }
 
 void simd_pairs_multiplications (float * x, float * y, float * z, size_t n)
