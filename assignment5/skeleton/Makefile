@@ -39,7 +39,7 @@ SRCDIR = src
 # = Compiler settings
 # ==================================================================================== #
 
-AFLAGS = -O3 # maybe: -m64 -march=corei7-avx
+AFLAGS = -O3 -m64 -march=corei7-avx 
 DFLAGS = -g -Wall
 LIBS   = -lm
 
