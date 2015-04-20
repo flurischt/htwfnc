@@ -39,7 +39,7 @@ SRCDIR = src
 # = Compiler settings
 # ==================================================================================== #
 
-AFLAGS = -O3 -m64 -march=corei7 # remove avx to compare to sse4 compiler optimizations
+AFLAGS = -Wall -O3 -m64 -march=corei7 # remove avx to compare to sse4 compiler optimizations
 DFLAGS = -g -Wall
 LIBS   = -lm
 
