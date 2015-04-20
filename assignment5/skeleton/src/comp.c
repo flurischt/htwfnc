@@ -66,19 +66,21 @@ void debug_m128(char* msg, __m128 out)
 
 void simd_pairs_multiplications (float * x, float * y, float * z, size_t n)
 {
+    __m128 ab, cd, dc, re_part, im_part, result;
+    __m128 multiplier = _mm_set_ps(2.0, 1.0, 2.0, 1.0);
     size_t i;
     for(i=0;i<=2*n-4;i+=4)
     {
         //Load two complex numbers from x and two from y
-        __m128 ab = _mm_load_ps(x+i); // LSB[a1, b1, a2, b2]
-        __m128 cd = _mm_load_ps(y+i); // LSB[c1, d1, c2, d2]
-        __m128 dc = _mm_shuffle_ps(cd, cd, _MM_SHUFFLE(2, 3, 0, 1)); // LSB[d1, c1, d2, c2]
-        __m128 multiplier = _mm_set_ps(2.0, 1.0, 2.0, 1.0);
+        ab = _mm_load_ps(x+i); // LSB[a1, b1, a2, b2]
+        cd = _mm_load_ps(y+i); // LSB[c1, d1, c2, d2]
+        dc = _mm_shuffle_ps(cd, cd, _MM_SHUFFLE(2, 3, 0, 1)); // LSB[d1, c1, d2, c2]
         //Compute
-        __m128 re_part = _mm_mul_ps(ab, cd); // LSB[a1*c1, b1*d1, a2*c2, b2*d2]
+        re_part = _mm_mul_ps(ab, cd); // LSB[a1*c1, b1*d1, a2*c2, b2*d2]
+        im_part = _mm_mul_ps(ab, dc); // LSB[a1*d1, b1*c1, a2*d2, b2*c2]
+        // TODO there's a dependency between the two re_part = multiplicatoins...
         re_part = _mm_mul_ps(re_part, multiplier); // LSB[a1c1, 2*b1d1, a2c2, 2*b2d2]
-        __m128 im_part = _mm_mul_ps(ab, dc); // LSB[a1*d1, b1*c1, a2*d2, b2*c2] 
-        __m128 result = _mm_hadd_ps(re_part, im_part);
+        result = _mm_hadd_ps(re_part, im_part);
         result = _mm_shuffle_ps(result, result, _MM_SHUFFLE(3, 1, 2,0));
         //Store
         _mm_store_ps(z+i, result);
