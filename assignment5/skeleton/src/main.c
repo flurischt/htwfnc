@@ -48,7 +48,7 @@ void test_conjugate_transpose ()
 		m[1][1] = (complex_t) {RANDOM, RANDOM};
 		simd_conjugate_transpose(m, m_simd);
 		sisd_conjugate_transpose(m, m_sisd);
-		if (validate((float *)&m_simd[0][0],  (float *)&m_sisd[0][0], 4)) {
+		if (validate((float *)&m_simd[0][0],  (float *)&m_sisd[0][0], 8)) {
 			printf("Test %02d: OK\n", i+1);
 		} else {
 			printf("Test %02d: FAIL\n", i+1);
