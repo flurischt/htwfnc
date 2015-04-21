@@ -103,6 +103,23 @@ void simd_pairs_multiplications (float * x, float * y, float * z, size_t n)
 
 void simd_ceil (float * m, size_t n)
 {
-    // your code goes here ...
+    // ASSUMING n can be divided by 4
+    
+    __m128 input, ones, twos, threes, combined;
+    __m128 one_constants = _mm_set1_ps(1);
+    __m128 two_constants = _mm_set1_ps(2);
+    __m128 three_constants = _mm_set1_ps(3);
+    size_t i;
+    float * next_elems = m;
+    for(i=0;i<=n*n-4;i+=4,next_elems+=4)
+    {
+            input = _mm_load_ps(next_elems);
+            ones = _mm_cmple_ps(input, one_constants);
+            twos = _mm_cmple_ps(input, two_constants);
+            combined = _mm_blendv_ps(two_constants, one_constants, ones);
+            threes = _mm_or_ps(ones, twos);
+            combined = _mm_blendv_ps(three_constants, combined, threes);
+            _mm_store_ps(next_elems, combined);
+    }
 }
 
