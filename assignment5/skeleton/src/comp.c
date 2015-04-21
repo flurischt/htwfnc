@@ -32,20 +32,34 @@
 #include <x86intrin.h>
 #include "comp.h"
 
+#define USE_UNARY_MINUS_VERSION 1
+
 void simd_conjugate_transpose (complex_t in[2][2], complex_t out[2][2])
 {
     //Load
     __m128 row1 = _mm_load_ps((float*)in[0]);
     __m128 row2 = _mm_load_ps((float*)in[1]);
+#if USE_UNARY_MINUS_VERSION
+    // try to avoid a 5-cycle _mm_mul call. use shuffle and unary-minus
+    __m128 re = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(2, 0, 2, 0)); //[re1 re2 re3 re4]
+    __m128 im = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(3, 1, 3, 1));// [im1 im2 im3 im4]
+    im = -im;
+    __m128 conj_row1 = _mm_shuffle_ps(re, im, _MM_SHUFFLE(2, 0, 2, 0)); // [re1 re3 im1 im3]
+    __m128 conj_row2 = _mm_shuffle_ps(re, im, _MM_SHUFFLE(3, 1, 3, 1)); // [re2, re4, im2, im4]
+    conj_row1 = _mm_shuffle_ps(conj_row1, conj_row1, _MM_SHUFFLE(3, 1, 2, 0)); // [re1, im1, re3, im3]
+    conj_row2 = _mm_shuffle_ps(conj_row2, conj_row2, _MM_SHUFFLE(3, 1, 2, 0));
+#else
+    // straightforward implementation using a multiplier
     __m128 multiplier = _mm_set_ps(-1.0, 1.0, -1.0, 1.0);
     //Compute
     row1 = _mm_mul_ps(row1, multiplier);
     row2 = _mm_mul_ps(row2, multiplier);
     //Shuffle/Store
-    __m128 conj_row = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(1, 0, 1, 0));
-    _mm_store_ps((float*) out[0], conj_row);
-    conj_row = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(3, 2, 3, 2));
-    _mm_store_ps((float*) out[1], conj_row);
+    __m128 conj_row1 = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(1, 0, 1, 0));
+    __m128 conj_row2 = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(3, 2, 3, 2));
+#endif
+    _mm_store_ps((float*)out[0], conj_row1);
+    _mm_store_ps((float*)out[1], conj_row2);
 }
 
 // a small helper to debug __m128 datatypes
