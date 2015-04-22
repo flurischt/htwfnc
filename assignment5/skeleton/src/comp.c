@@ -36,9 +36,9 @@
 
 void simd_conjugate_transpose (complex_t in[2][2], complex_t out[2][2])
 {
-    //Load
-    __m128 row1 = _mm_load_ps((float*)in[0]);
-    __m128 row2 = _mm_load_ps((float*)in[1]);
+    //Load, I just assume it's not aligned
+    __m128 row1 = _mm_loadu_ps((float*)in[0]);
+    __m128 row2 = _mm_loadu_ps((float*)in[1]);
 #if USE_UNARY_MINUS_VERSION
     // try to avoid a 5-cycle _mm_mul call. use shuffle and unary-minus
     __m128 re = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(2, 0, 2, 0)); //[re1 re2 re3 re4]
@@ -58,8 +58,8 @@ void simd_conjugate_transpose (complex_t in[2][2], complex_t out[2][2])
     __m128 conj_row1 = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(1, 0, 1, 0));
     __m128 conj_row2 = _mm_shuffle_ps(row1, row2, _MM_SHUFFLE(3, 2, 3, 2));
 #endif
-    _mm_store_ps((float*)out[0], conj_row1);
-    _mm_store_ps((float*)out[1], conj_row2);
+    _mm_storeu_ps((float*)out[0], conj_row1);
+    _mm_storeu_ps((float*)out[1], conj_row2);
 }
 
 // a small helper to debug __m128 datatypes
