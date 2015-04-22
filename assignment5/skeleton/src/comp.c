@@ -129,12 +129,13 @@ void simd_ceil (float * m, size_t n)
         // finish remaining elements
         for(;i<peel;i++)
             *(m+i) = (*(m+i) < 1) ? 1 : (*(m+i) < 2) ? 2 : 3;
+        peel--;
     }
     // now compute aligned
-    float * next_elems = m+peel-1;
+    float * next_elems = m+peel;
     size_t num_elements = n*n;
     size_t num_vectorizable_elements = num_elements -4;
-    for(i=peel-1;i<=num_vectorizable_elements;i+=4,next_elems+=4)
+    for(i=peel;i<=num_vectorizable_elements;i+=4,next_elems+=4)
     {
         //printf("i=%i, n=%i\n", i, num_vectorizable_elements);
         input = _mm_load_ps(next_elems);
