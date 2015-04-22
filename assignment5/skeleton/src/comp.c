@@ -64,22 +64,6 @@ void simd_conjugate_transpose (complex_t in[2][2], complex_t out[2][2])
     _mm_storeu_ps((float*)out[1], conj_row2);
 }
 
-// a small helper to debug __m128 datatypes
-// they are all output as floats
-void debug_m128(char* msg, __m128 out)
-{
-    float *a = malloc((sizeof(float)*4));
-    printf(msg);
-    printf("[");
-    _mm_store_ps(a, out);
-    int i;
-    for(i=0;i<4;i++)
-    {
-        printf(" %f", a[i]);
-    }
-    printf(" ]\n");
-}
-
 void simd_pairs_multiplications (float * x, float * y, float * z, size_t n)
 {
     __m128 ab, cd, dc, re_part, im_part, result;
