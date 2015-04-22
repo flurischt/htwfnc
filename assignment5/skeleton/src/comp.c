@@ -131,18 +131,21 @@ void simd_ceil (float * m, size_t n)
             *(m+i) = (*(m+i) < 1) ? 1 : (*(m+i) < 2) ? 2 : 3;
     }
     // now compute aligned
-    float * next_elems = m;
+    float * next_elems = m+peel-1;
     size_t num_elements = n*n;
     size_t num_vectorizable_elements = num_elements -4;
-    for(i=peel;i<=num_vectorizable_elements;i+=4,next_elems+=4)
+    for(i=peel-1;i<=num_vectorizable_elements;i+=4,next_elems+=4)
     {
-            input = _mm_load_ps(next_elems);
-            ones = _mm_cmple_ps(input, one_constants);
-            twos = _mm_cmple_ps(input, two_constants);
-            combined = _mm_blendv_ps(two_constants, one_constants, ones);
-            threes = _mm_or_ps(ones, twos);
-            combined = _mm_blendv_ps(three_constants, combined, threes);
-            _mm_store_ps(next_elems, combined);
+        //printf("i=%i, n=%i\n", i, num_vectorizable_elements);
+        input = _mm_load_ps(next_elems);
+        //printf("load_success!\n");
+        ones = _mm_cmple_ps(input, one_constants);
+        twos = _mm_cmple_ps(input, two_constants);
+        combined = _mm_blendv_ps(two_constants, one_constants, ones);
+        threes = _mm_or_ps(ones, twos);
+        combined = _mm_blendv_ps(three_constants, combined, threes);
+        _mm_store_ps(next_elems, combined);
+        //printf("store_success!\n");
     }
     // and finish remaining 1,2 or 3 elements
     for(;i<num_elements;i++)
