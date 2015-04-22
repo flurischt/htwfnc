@@ -125,7 +125,7 @@ void test_ceil_unaligned()
             simd_ceil(m_simd, n);
             sisd_ceil(m_sisd, n);
             if (validate(m_simd, m_sisd, n * n)) {
-                printf("Test %02d: OK\n", i+1);
+//                printf("Test %02d: OK\n", i+1);
             } else {
                 printf("Test %02d: FAIL\n", i+1);
             }

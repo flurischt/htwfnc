@@ -97,7 +97,7 @@ void simd_ceil (float * m, size_t n)
     size_t num_elements = n*n;
     size_t num_vectorizable_elements = num_elements -4;
 
-    // check for alignment, peel the loop if necessary
+    // check alignment, try to peel the loop if necessary
     int peel = ((unsigned long)m) & 0xf;
     if(peel != 0 && peel % 4 == 0) // unaligned but loop can be peeled
     {
@@ -105,8 +105,11 @@ void simd_ceil (float * m, size_t n)
         for(i=0;i<peel;i++)
             m[i] = (m[i] < 1) ? 1 : (m[i] < 2) ? 2 : 3;
     } 
-    else if (peel != 0) // unaligned, but we'd need to compute lcm(16-peel, sizeof(float)) single entries. just vectorize unaligned 
+    else if (peel != 0) 
     {
+        // unaligned, but cannot be easily peeled
+        // we'd need to compute lcm(16-peel, sizeof(float)) unaligned entries. 
+        // just vectorize unaligned 
         for(i=0;i<=num_vectorizable_elements;i+=4)
         {
             input = _mm_loadu_ps(&m[i]);
@@ -120,7 +123,7 @@ void simd_ceil (float * m, size_t n)
         // and finish remaining 1,2 or 3 elements
         for(;i<num_elements;i++)
             m[i] = (m[i] < 1) ? 1 : (m[i] < 2) ? 2 : 3;
-        return;
+        return; // no need to check the other two loop coinditions
     }
     // now compute aligned
     for(;i<=num_vectorizable_elements;i+=4)
