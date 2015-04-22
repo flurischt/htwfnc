@@ -29,7 +29,9 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <x86intrin.h>
+#include "xmmintrin.h"
+#include "smmintrin.h"
+#include "nmmintrin.h"
 #include "comp.h"
 
 #define USE_UNARY_MINUS_VERSION 1
