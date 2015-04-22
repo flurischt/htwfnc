@@ -78,7 +78,6 @@ void simd_pairs_multiplications (float * x, float * y, float * z, size_t n)
         //Compute
         re_part = _mm_mul_ps(ab, cd); // LSB[a1*c1, b1*d1, a2*c2, b2*d2]
         im_part = _mm_mul_ps(ab, dc); // LSB[a1*d1, b1*c1, a2*d2, b2*c2]
-        // TODO there's a dependency between the two re_part = multiplicatoins...
         re_part = _mm_mul_ps(re_part, multiplier); // LSB[a1c1, 2*b1d1, a2c2, 2*b2d2]
         result = _mm_hadd_ps(re_part, im_part);
         result = _mm_shuffle_ps(result, result, _MM_SHUFFLE(3, 1, 2,0));
