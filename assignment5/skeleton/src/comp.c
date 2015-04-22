@@ -93,49 +93,48 @@ void simd_ceil (float * m, size_t n)
     __m128 one_constants = _mm_set1_ps(1);
     __m128 two_constants = _mm_set1_ps(2);
     __m128 three_constants = _mm_set1_ps(3);
-    size_t i;
+    size_t i=0;
+    size_t num_elements = n*n;
+    size_t num_vectorizable_elements = num_elements -4;
 
     // check for alignment, peel the loop if necessary
-    size_t peel = ((unsigned long)m) & 0xf;
-    if(peel != 0)
+    int peel = ((unsigned long)m) & 0xf;
+    if(peel != 0 && peel % 4 == 0) // unaligned but loop can be peeled
     {
-        // if more than 4 elements, try to vectorize, but unaligned
-        peel = 16 - peel;
-        peel = (peel < n*n) ? peel : n*n;
-        for(i=0;i<=peel-4;i+=4)
+        peel = (16 - peel) >> 2;
+        for(i=0;i<peel;i++)
+            m[i] = (m[i] < 1) ? 1 : (m[i] < 2) ? 2 : 3;
+    } 
+    else if (peel != 0) // unaligned, but we'd need to compute lcm(16-peel, sizeof(float)) single entries. just vectorize unaligned 
+    {
+        for(i=0;i<=num_vectorizable_elements;i+=4)
         {
-            input = _mm_loadu_ps(m+i);
+            input = _mm_loadu_ps(&m[i]);
             ones = _mm_cmple_ps(input, one_constants);
             twos = _mm_cmple_ps(input, two_constants);
             combined = _mm_blendv_ps(two_constants, one_constants, ones);
             threes = _mm_or_ps(ones, twos);
             combined = _mm_blendv_ps(three_constants, combined, threes);
-            _mm_storeu_ps(m+i, combined);
+            _mm_storeu_ps(&m[i], combined);
         }
-        // finish remaining elements
-        for(;i<peel;i++)
-            *(m+i) = (*(m+i) < 1) ? 1 : (*(m+i) < 2) ? 2 : 3;
-        peel--;
+        // and finish remaining 1,2 or 3 elements
+        for(;i<num_elements;i++)
+            m[i] = (m[i] < 1) ? 1 : (m[i] < 2) ? 2 : 3;
+        return;
     }
     // now compute aligned
-    float * next_elems = m+peel;
-    size_t num_elements = n*n;
-    size_t num_vectorizable_elements = num_elements -4;
-    for(i=peel;i<=num_vectorizable_elements;i+=4,next_elems+=4)
+    for(;i<=num_vectorizable_elements;i+=4)
     {
-        //printf("i=%i, n=%i\n", i, num_vectorizable_elements);
-        input = _mm_load_ps(next_elems);
-        //printf("load_success!\n");
+        input = _mm_load_ps(&m[i]);
         ones = _mm_cmple_ps(input, one_constants);
         twos = _mm_cmple_ps(input, two_constants);
         combined = _mm_blendv_ps(two_constants, one_constants, ones);
         threes = _mm_or_ps(ones, twos);
         combined = _mm_blendv_ps(three_constants, combined, threes);
-        _mm_store_ps(next_elems, combined);
-        //printf("store_success!\n");
+        _mm_store_ps(&m[i], combined);
     }
     // and finish remaining 1,2 or 3 elements
     for(;i<num_elements;i++)
-        *(m+i) = (*(m+i) < 1) ? 1 : (*(m+i) < 2) ? 2 : 3;
+        m[i] = (m[i] < 1) ? 1 : (m[i] < 2) ? 2 : 3;
 }
 
