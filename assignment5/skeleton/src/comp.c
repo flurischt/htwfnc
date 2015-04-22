@@ -86,8 +86,8 @@ void simd_pairs_multiplications (float * x, float * y, float * z, size_t n)
     for(i=0;i<=2*n-4;i+=4)
     {
         //Load two complex numbers from x and two from y
-        ab = _mm_load_ps(x+i); // LSB[a1, b1, a2, b2]
-        cd = _mm_load_ps(y+i); // LSB[c1, d1, c2, d2]
+        ab = _mm_loadu_ps(x+i); // LSB[a1, b1, a2, b2]
+        cd = _mm_loadu_ps(y+i); // LSB[c1, d1, c2, d2]
         dc = _mm_shuffle_ps(cd, cd, _MM_SHUFFLE(2, 3, 0, 1)); // LSB[d1, c1, d2, c2]
         //Compute
         re_part = _mm_mul_ps(ab, cd); // LSB[a1*c1, b1*d1, a2*c2, b2*d2]
@@ -97,7 +97,7 @@ void simd_pairs_multiplications (float * x, float * y, float * z, size_t n)
         result = _mm_hadd_ps(re_part, im_part);
         result = _mm_shuffle_ps(result, result, _MM_SHUFFLE(3, 1, 2,0));
         //Store
-        _mm_store_ps(z+i, result);
+        _mm_storeu_ps(z+i, result);
     }
 }
 
