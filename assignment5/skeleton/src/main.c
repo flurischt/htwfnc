@@ -104,6 +104,35 @@ void test_ceil ()
 	}
 }
 
+void test_ceil_unaligned()
+{
+	printf("Testing SIMD unaligned function\n");
+	printf("-----------------------------------------\n");
+	int i, j, n = 1000, k;
+    char mem[4*n*n+16];
+	float *m_simd, m_sisd[n * n], temp, max = RAND_MAX / 3;
+    k=1;
+    for(k=0;k<=16;k++)
+    {
+        // simulate any possible alignment
+        m_simd = (float*)&mem[k];
+        for(i = 0; i < 10; i++){
+            for(j = 0; j < n * n; j++){
+                temp = (float) (rand()) / max;
+                m_simd[j] = temp;
+                m_sisd[j] = temp;
+            }
+            simd_ceil(m_simd, n);
+            sisd_ceil(m_sisd, n);
+            if (validate(m_simd, m_sisd, n * n)) {
+                printf("Test %02d: OK\n", i+1);
+            } else {
+                printf("Test %02d: FAIL\n", i+1);
+            }
+        }
+    }
+}
+
 int main(int argc, char **argv)
 {
 	srand (21169);
@@ -113,5 +142,7 @@ int main(int argc, char **argv)
 	printf("\n");
 	test_ceil();
 	printf("\n");
+    test_ceil_unaligned();
+    printf("\n");
 	return 0;
 }
