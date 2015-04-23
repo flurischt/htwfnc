@@ -28,12 +28,13 @@
  */
 
 #include <stdlib.h>
-#include <stdio.h>
 #include "xmmintrin.h"
 #include "smmintrin.h"
 #include "nmmintrin.h"
 #include "comp.h"
 
+// I measured both versions and on my Ivy Bridge cpu (clang, OS X) the first one
+// seemed to be faster
 #define USE_UNARY_MINUS_VERSION 1
 
 void simd_conjugate_transpose (complex_t in[2][2], complex_t out[2][2])
@@ -107,8 +108,8 @@ void simd_ceil (float * m, size_t n)
     else if (peel != 0) 
     {
         // unaligned, but cannot be easily peeled
-        // we'd need to compute lcm(16-peel, sizeof(float)) unaligned entries. 
-        // just vectorize unaligned 
+        // we'd need to compute around lcm(16-peel, sizeof(float)) unaligned entries. 
+        // just vectorize unaligned and leave the function
         for(i=0;i<=num_vectorizable_elements;i+=4)
         {
             input = _mm_loadu_ps(&m[i]);
