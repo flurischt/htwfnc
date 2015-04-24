@@ -87,6 +87,8 @@ void simd_pairs_multiplications (float * x, float * y, float * z, size_t n)
     }
 }
 
+// I tested it with and without peeling. on my machine
+// this version always performed better than just the unaligned vectorization (branch "else if (peel != 0))
 void simd_ceil (float * m, size_t n)
 {
     __m128 input, ones, twos, combined;
