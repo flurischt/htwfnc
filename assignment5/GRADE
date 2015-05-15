@@ -1,0 +1,6 @@
+Total 100.00 / 100.00
+
+Ex 1: 15 / 15
+First version works faster because your "unary minus" operaton is in fact translated into xor intrinsic. More info on that you can find here: http://fastcpp.blogspot.ch/2011/03/changing-sign-of-float-values-using-sse.html
+Ex 2) 30/30
+Ex 3) 50/50 OK
